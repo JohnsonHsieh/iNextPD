@@ -1,0 +1,15 @@
+Package: iNextPD
+Type: Package
+Title: iNterpolation and EXTrapolation for phylogenetic diversity
+Version: 0.1.0
+Date: 2015-06-16
+Authors@R: c(person("T. C.", "Hsieh", role = c("aut", "cre", "cph"), email =
+    "euler96@gmail.com"),  person("Chun-Huo", "Chiu", role = "ths", email =
+    "otterfinder@yahoo.com.tw"), person("Anne", "Chao", role = "ths", email =
+    "chao@stat.nthu.edu.tws"))
+Maintainer: T. C. Hsieh <euler96@gmail.com>
+Description: iNterpolation and EXTrapolation for phylogenetic diversity
+License: GPL (>= 3)
+Imports:
+    ade4,
+    ggplot2
