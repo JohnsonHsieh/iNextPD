@@ -11,7 +11,7 @@ by T. C. Hsieh, Chun-Huo Chiu, and Anne Chao
 Institute of Statistics, National Tsing Hua University, Hsin-Chu, Taiwan
 30043
 </h4>
-The program iNEXT-pd is a R source code to compute the Rarefaction and
+The program iNextPD is a R source code to compute the Rarefaction and
 extrapolation of phylogenetic diversity (PD) present by Chao et al.
 (2014). This program provieds the interpolated and extrapolted value of
 Faith's PD (the total branch length of a phylogenetic tree). Three types
