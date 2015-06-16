@@ -25,7 +25,11 @@ DataInfo <- function(x, datatype="abundance"){
 }
 
 ViewTree <- function(abun, labels, phy){
+<<<<<<< HEAD
   require(ade4)
+=======
+  library(ade4)
+>>>>>>> 7958e4ab2fd7dba6eda75cecc2110aafda24ae6d
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
   
@@ -146,7 +150,10 @@ estPD <- function(x, labels, phy, q=0, datatype="abundance", conf=0.95){
   
   
   myFun0 <- function(x,U,L){
+<<<<<<< HEAD
     n <- sum(x)
+=======
+>>>>>>> 7958e4ab2fd7dba6eda75cecc2110aafda24ae6d
     L.obs <- L[U>0]
     U.obs <- U[U>0]
     T <- sum(L*U/n)
@@ -170,7 +177,10 @@ estPD <- function(x, labels, phy, q=0, datatype="abundance", conf=0.95){
   }
   
   myFun1 <- function(x,U,L){
+<<<<<<< HEAD
     n <- sum(x)
+=======
+>>>>>>> 7958e4ab2fd7dba6eda75cecc2110aafda24ae6d
     L.obs <- L[U>0]
     U.obs <- U[U>0]
     T <- sum(L*U/n)
@@ -200,7 +210,10 @@ estPD <- function(x, labels, phy, q=0, datatype="abundance", conf=0.95){
   }
   
   myFun2 <- function(x,U,L){
+<<<<<<< HEAD
     n <- sum(x)
+=======
+>>>>>>> 7958e4ab2fd7dba6eda75cecc2110aafda24ae6d
     L.obs <- L[U>0]
     U.obs <- U[U>0]
     T <- sum(L*U/n)
