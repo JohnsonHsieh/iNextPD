@@ -1,10 +1,8 @@
-<<<<<<< HEAD
+
 export(
 "iNextPD",
 "DataInfo",
 "estPD",
 "ggiNEXT"
 )
-=======
-exportPattern("^[[:alpha:]]+")
->>>>>>> 7958e4ab2fd7dba6eda75cecc2110aafda24ae6d
+
