@@ -31,4 +31,4 @@ out1 <- iNextPD(abun, labels, phy, se=TRUE)
 ggiNEXT(x=out1, type=1, color.var="site")
 ggiNEXT(x=out1, type=2, color.var="site")
 ggiNEXT(x=out1, type=3, color.var="site")
-
+}
