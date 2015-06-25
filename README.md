@@ -21,6 +21,15 @@ of curve are allowed:
 2.  R/E of sample coverage.
 3.  Coverage-based R/E of PD.
 
+If you use iNextPD to obtain results for publication, you should cite
+the relevant papers ([Chao et al.
+2015](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12247/abstract))
+along with the following reference for Jade R package:
+
+> T. C. Hsieh, Chun-Huo Chiu, and Anne Chao (2014). iNextPD:
+> iNterpolation and EXTrapolation for phylogenetic diversity. R package
+> version 0.1.0. <http://chao.stat.nthu.edu.tw/blog/software-download/>
+
 ### Software needed to run the development version
 
 -   Required: [R](http://cran.rstudio.com/)
