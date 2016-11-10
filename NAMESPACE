@@ -1,8 +1,34 @@
-import("ggplot2", "ade4")
-export(
-"iNextPD",
-"DataInfo",
-"estPD",
-"ggiNEXT"
-)
+import(stats)
+import(ggplot2)
+import(graphics)
+import(ade4)
+importFrom("grDevices", "adjustcolor", "hcl")
 
+S3method(print,iNEXT)
+S3method(plot,iNEXT)
+S3method(ggiNEXT,iNEXT)
+S3method(ggiNEXT,default)
+S3method(ggiNEXT,iNextPD)
+S3method(fortify,iNEXT)
+S3method(fortify,iNextPD)
+
+export(iNextPD)
+export(DataInfo)
+export(ChaoSpecies)
+export(ChaoEntropy)
+export(EstSimpson)
+export(fortify.iNEXT)
+export(fortify.iNextPD)
+export(ggiNEXT)
+export(ggiNEXT.iNEXT)
+export(ggiNEXT.iNextPD)
+export(ggiNEXT.default)
+export(estimateD)
+export(as.incfreq)
+export(ViewTree)
+export(estPD)
+export(PhD.m.mle)
+export(PhD.m)
+export(SpBoot)
+export(iNextPD.Ind)
+export(iNextPD.Sam)
