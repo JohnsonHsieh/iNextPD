@@ -11,7 +11,7 @@ citEntry(
 		 year = year,
 		 note = note,
 		 url = "http://chao.stat.nthu.edu.tw/blog/software-download/",
-		 textVersion = paste("T. C. Hsieh and Anne Chao. 2016. iNextPD: Interpolation and Eextrapolation for Phylogenetic Diversity.", note, "URL: http://chao.stat.nthu.edu.tw/blog/software-download")
+		 textVersion = paste("T. C. Hsieh and Anne Chao. 2016. iNextPD: Interpolation and Extrapolation for Phylogenetic Diversity.", note, "URL: http://chao.stat.nthu.edu.tw/blog/software-download")
 )
 
 citEntry(

@@ -1,6 +1,6 @@
 Package: iNextPD
 Type: Package
-Title: Interpolation and Eextrapolation for Phylogenetic Diversity
+Title: Interpolation and Extrapolation for Phylogenetic Diversity
 Version: 0.3.0
 Date: 2016-11-10
 Author: T. C. Hsieh, Chun-Huo Chiu, and Anne Chao
