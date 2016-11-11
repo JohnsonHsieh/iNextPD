@@ -1,0 +1,4 @@
+iNextPD 0.3.0
+----------------------------------------------------------------
+- Fixes to pass `R CMD check --as-cran` in R-devel.
+- Fixes bootstraping estimation for `"incidence_raw"` in `iNext.Sam()`.

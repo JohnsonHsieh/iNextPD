@@ -105,13 +105,17 @@ invSize <- function(x, datatype="abundance", size=NULL, digits=4){
 #' @param x a \code{data.frame} or \code{list} of species abundances or incidence frequencies.\cr 
 #' If \code{datatype = "incidence"}, then the first entry of the input data must be total number of sampling units, followed 
 #' by species incidence frequencies in each column or list.
+#' @param labels species names for object x
+#' @param phy a phylog objcet for input phylo-tree
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}),  
-#' sampling-unit-based incidence frequencies data (\code{datatype = "incidence_freq"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
+#' or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
 #' @param base comparison base: sample-size-based (\code{base="size"}) or coverage-based \cr (\code{base="coverage"}).
 #' @param level an integer specifying a particular sample size or a number (between 0 and 1) specifying a particular value of sample coverage. 
 #' If \code{base="size"} and \code{level=NULL}, then this function computes the diversity estimates for the minimum sample size among all sites. 
 #' If \code{base="coverage"} and \code{level=NULL}, then this function computes the diversity estimates for the minimum sample coverage among all sites. 
-#' @return a \code{data.frame} of species diversity table including the sample size, sample coverage,
+#' @param conf a positive number < 1 specifying the level of confidence interval, default is 0.95. Remove C.I. by setting conf=NULL.
+#' @param digits integer indicating the number of decimal places \code{round} to be used.
+#' @return a \code{data.frame} of phylogenetic diversity table including the sample size, sample coverage,
 #' method (rarefaction or extrapolation), and diversity estimates with q = 0, 1, and 2 for the user-specified sample size or sample coverage.
 #' @examples
 #' data(bird)
@@ -122,6 +126,7 @@ invSize <- function(x, datatype="abundance", size=NULL, digits=4){
 #' @export
 estimatePD <- function(x, labels, phy, datatype="abundance", base="size", level=NULL, conf=0.95, digits=4){
   datatype <- check_datatype(datatype)
+  site <- m <- NULL
   
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
@@ -147,6 +152,7 @@ estimatePD <- function(x, labels, phy, datatype="abundance", base="size", level=
   
   q <- c(0, 1, 2)
   Fun <- function(x, q){
+    m <- NULL
     se <- ifelse(is.null(conf), FALSE, TRUE)
     if(datatype == "abundance"){
       if(sum(x)==0) stop("Zero abundance counts in one or more sample sites")
@@ -184,6 +190,12 @@ estimatePD <- function(x, labels, phy, datatype="abundance", base="size", level=
     })
     out <- do.call(rbind, out)
     out <- data.frame(site=rep(names(x), each=length(size)*length(q)), out)
+    if(base=="coverage"){
+      tmp2 <- sapply(1:length(size), function(i){
+        subset(out, site==unique(out$site)[i], m==size[i])
+      })
+      out <- do.call(rbind, tmp2)
+    }
     rownames(out) <- NULL
   }else if(class(x)=="data.frame" | class(x)=="matrix"){
     if(is.null(colnames(x))){
@@ -197,6 +209,16 @@ estimatePD <- function(x, labels, phy, datatype="abundance", base="size", level=
     out <- do.call(rbind, out)
     out <- data.frame(site=rep(names(x), each=length(size)*length(q)), out)
     rownames(out) <- NULL
+    
+    if(base=="coverage"){
+      size <- unique(out$m)
+      tmp2 <- lapply(1:length(size), function(i){
+        subset(out, out$site%in%unique(out$site)[i] & out$m%in%size[i])
+      })
+      out <- do.call(rbind, tmp2)
+    }
+    
+   
   }
 
   if(!is.null(conf)){
@@ -217,17 +239,16 @@ estimatePD <- function(x, labels, phy, datatype="abundance", base="size", level=
 # 
 
 ###############################################
-#' Transform incidence raw data to incidence frequencies (iNEXT input format) 
-#' 
-#' \code{as.incfreq}: transform incidence raw data (a species by sites presence-absence matrix) to incidence frequencies data (iNEXT input format, a row-sum frequencies vector contains total number of sampling units).
-#' @param x a \code{data.frame} or \code{matirx} of species by sites presence-absence matrix.
-#' @return a \code{vector} of species incidence frequencies, the first entry of the input data must be total number of sampling units.
-#' @examples
-#' data(plant)
-#' lapply(plant, as.incfreq)
-#' 
-#' @export
-#' 
+# Transform incidence raw data to incidence frequencies (iNEXT input format) 
+# 
+# \code{as.incfreq}: transform incidence raw data (a species by sites presence-absence matrix) to incidence frequencies data (iNEXT input format, a row-sum frequencies vector contains total number of sampling units).
+# @param x a \code{data.frame} or \code{matirx} of species by sites presence-absence matrix.
+# @return a \code{vector} of species incidence frequencies, the first entry of the input data must be total number of sampling units.
+# @examples
+# data(plant)
+# lapply(plant, as.incfreq)
+# @export 
+# 
 as.incfreq <- function(x){
   if(class(x) == "data.frame" | class(x) == "matrix"){
     a <- sort(unique(c(unlist(x))))
@@ -249,17 +270,16 @@ as.incfreq <- function(x){
 }
 
 ###############################################
-#' Transform abundance raw data to abundance row-sum counts (iNEXT input format) 
-#' 
-#' \code{as.abucount}: transform abundance raw data (a species by sites matrix) to abundance rwo-sum counts data (iNEXT input format).
-#' @param x a \code{data.frame} or \code{matirx} of species by sites matrix.
-#' @return a \code{vector} of species abundance row-sum counts.
-#' @examples
-#' data(plant)
-#' lapply(plant, as.abucount)
-#' 
-#' @export
-#' 
+# Transform abundance raw data to abundance row-sum counts (iNEXT input format) 
+# 
+# \code{as.abucount}: transform abundance raw data (a species by sites matrix) to abundance rwo-sum counts data (iNEXT input format).
+# @param x a \code{data.frame} or \code{matirx} of species by sites matrix.
+# @return a \code{vector} of species abundance row-sum counts.
+# @examples
+# data(plant)
+# lapply(plant, as.abucount)
+# @export
+# 
 as.abucount <- function(x){
   if(class(x) == "data.frame" | class(x) == "matrix"){
     y <- rowSums(x)

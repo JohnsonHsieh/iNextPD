@@ -1,4 +1,4 @@
-ExpandData_ <- function(data, labels, phy, datatype="abundance"){
+ExpandData_ <- function(x, labels, phy, datatype="abundance"){
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
   
@@ -11,9 +11,9 @@ ExpandData_ <- function(data, labels, phy, datatype="abundance"){
   if(sum(is.na(my_match)) > 0) stop("Argument labels and tree leaves not matach")
   
   if(datatype=="abundance"){
-    n <- sum(data)  #sample size
-    names(data) <- labels
-    a <- data[names(phy$leaves)]
+    n <- sum(x)  #sample size
+    names(x) <- labels
+    a <- x[names(phy$leaves)]
     
     for(i in 1:length(phy$parts)){
       a[1+length(a)] <- sum(a[phy$parts[[i]]])
@@ -22,21 +22,21 @@ ExpandData_ <- function(data, labels, phy, datatype="abundance"){
     data.frame("branch_abun"=a, "branch_length"=c(phy$leaves, phy$nodes))
     
   }else if(datatype=="incidence_raw"){
-    y <- as.incfreq(data)
+    y <- iNEXT::as.incfreq(x)
     t <- y[1]
     y <- y[-1]
     names(y) <- labels
     y <- y[names(phy$leaves)]
     Ut <- sum(y)
     
-    rownames(data) <- labels
-    data <- data[names(phy$leaves),]
+    rownames(x) <- labels
+    x <- x[names(phy$leaves),]
     
     for(i in 1:length(phy$parts)){
-      data <- rbind(data, colSums(data[phy$parts[[i]],])>0)
-      rownames(data)[nrow(data)] <- names(phy$parts)[i]
+      x <- rbind(x, colSums(x[phy$parts[[i]],])>0)
+      rownames(x)[nrow(x)] <- names(phy$parts)[i]
     }
-    yy <- rowSums(data)
+    yy <- rowSums(x)
     data.frame("branch_abun"=yy, "branch_length"=c(phy$leaves, phy$nodes))
   }
 }
@@ -55,9 +55,11 @@ ExpandData_ <- function(data, labels, phy, datatype="abundance"){
 #' @examples 
 #' data(bird)
 #' bird.abu <- bird$abun
+#' bird.inc <- bird$inci
 #' bird.lab <- rownames(bird$abun)
 #' bird.phy <- ade4::newick2phylog(bird$tre)
 #' ExpandData(bird.abu, labels=bird.lab, phy=bird.phy, datatype="abundance")
+#' ExpandData(bird.inc, labels=bird.lab, phy=bird.phy, datatype="incidence_raw")
 #' @export
 ExpandData <- function(x, labels, phy, datatype="abundance"){
   if (!inherits(phy, "phylog")) 

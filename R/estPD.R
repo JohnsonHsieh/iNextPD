@@ -1,4 +1,4 @@
-#' ###########################################
+# ###########################################
 #' Estimate asymptotic phylogenetic diversity
 #' 
 #' \code{estPD}: Estimate asymptotic phylogenetic diversity with order q = 0, 1, 2.
@@ -21,8 +21,8 @@
 #' 
 #' # incidence_based example
 #' bird.inc <- bird$inci
-#' bird.lab <- rownames(bird$inci)
-#' bird.phy <- ade4::newick2phylog(bird$tre)
+# bird.lab <- rownames(bird$inci[[1]])
+# bird.phy <- ade4::newick2phylog(bird$tre)
 #' estPD(bird.inc, labels=bird.lab, phy=bird.phy, q=0, datatype="incidence_raw", se=TRUE)
 #' @export
 estPD <- function(x, labels, phy, q=0, datatype="abundance", se=FALSE, conf=0.95){
@@ -200,7 +200,7 @@ estPD <- function(x, labels, phy, q=0, datatype="abundance", se=FALSE, conf=0.95
   
 }
 
-#' sub function to build estPD bootstrap s.e.
+# sub function to build estPD bootstrap s.e.
 estPDsub <- function(n, x, U, L, q=0, datatype="abundance"){
   datatype <- check_datatype(datatype)
   
@@ -286,7 +286,7 @@ estPDsub <- function(n, x, U, L, q=0, datatype="abundance"){
   }
 }
 
-#' using bootstrap assemblage to compute se of qPD
+# using bootstrap assemblage to compute se of qPD
 PdBootstrapFun <-  function(x, labels, phy, q, datatype="abundance", B){
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
@@ -298,7 +298,7 @@ PdBootstrapFun <-  function(x, labels, phy, q, datatype="abundance", B){
   
   if(datatype=="abundance"){
     n <- sum(x)
-    BootComm <- SpBoot_(x, labels, phy, "abundance")
+    BootComm <- PDBoot_(x, labels, phy, "abundance")
     Prob.hat <- BootComm$branch_abun
     L.hat <- BootComm$branch_length
     U.Mat <- t(sapply(Prob.hat, function(p) rbinom(B, n, p)))
@@ -306,7 +306,7 @@ PdBootstrapFun <-  function(x, labels, phy, q, datatype="abundance", B){
     se
   }else if(datatype=="incidence_raw"){
     t <- as.incfreq(x)[1]
-    BootComm <- SpBoot_(x, labels, phy, "incidence_raw")
+    BootComm <- PDBoot_(x, labels, phy, "incidence_raw")
     Prob.hat <- BootComm$branch_abun
     L.hat <- BootComm$branch_length
     U.Mat <- t(sapply(Prob.hat, function(p) rbinom(B, t, p)))

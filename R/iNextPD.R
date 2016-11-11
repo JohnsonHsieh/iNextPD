@@ -7,14 +7,14 @@ check_datatype <- function(datatype){
   return(datatype)
 }
 
-iNextPD.Ind <- function(abun, labels, phy, q, size=NULL, endpoint=2*sum(abun), knots=40, se=FALSE, conf=0.95, nboot=50){
+iNextPD.Ind <- function(x, labels, phy, q, size=NULL, endpoint=2*sum(x), knots=40, se=FALSE, conf=0.95, nboot=50){
   m <- size
-  n <- sum(abun)
+  n <- sum(x)
   if(is.null(m)) {
     if(endpoint <= n) {
       m <- floor(seq(1, endpoint, length=floor(knots)))
     } else {
-      m <- c(floor(seq(1, sum(abun)-1, length.out=floor(knots/2)-1)), sum(abun), floor(seq(sum(abun)+1, to=endpoint, length.out=floor(knots/2))))
+      m <- c(floor(seq(1, sum(x)-1, length.out=floor(knots/2)-1)), sum(x), floor(seq(sum(x)+1, to=endpoint, length.out=floor(knots/2))))
     }
     m <- c(1, m[-1])
   }else if(!is.null(m)) {	
@@ -25,18 +25,18 @@ iNextPD.Ind <- function(abun, labels, phy, q, size=NULL, endpoint=2*sum(abun), k
     m <- sort(unique(m))
   }
   
-  if(se){
+  if(se==TRUE & !is.null(conf)){
     if (!is.numeric(conf) || conf > 1 || conf < 0) {
       warning("\"conf\"(confidence level) must be a numerical value between 0 and 1, We use \"conf\" = 0.95 to calculate!")
       conf <- 0.95
     }
   }
   
-  tmp <- ExpandData_(abun, labels, phy, datatype="abundance")
+  tmp <- ExpandData_(x, labels, phy, datatype="abundance")
   U <- tmp$branch_abun
   L <- tmp$branch_length
-  names(abun) <- labels
-  x <- abun[names(phy$leaves)]
+  names(x) <- labels
+  x <- x[names(phy$leaves)]
   phd.hat <- PhD.m(n, x, U, L, q, m)
   C.hat <- Coverage_(x, "abundance", m)
   
@@ -77,14 +77,14 @@ iNextPD.Ind <- function(abun, labels, phy, q, size=NULL, endpoint=2*sum(abun), k
 }
 
 
-iNextPD.Sam <- function(abun, labels, phy, q, size=NULL, endpoint=2*ncol(abun), knots=40, se=FALSE, conf=0.95, nboot=50){
+iNextPD.Sam <- function(x, labels, phy, q, size=NULL, endpoint=2*ncol(x), knots=40, se=FALSE, conf=0.95, nboot=50){
   
-  Spec <- as.incfreq(abun)
+  Spec <- iNEXT::as.incfreq(x)
   #if(which.max(Spec)!=1) 
   #  stop("invalid data structure!, first element should be number of sampling units")
   t <- size
   nT <- Spec[1]
-  endpoint <- ifelse(is.null(endpoint), 2*ncol(abun), endpoint)
+  endpoint <- ifelse(is.null(endpoint), 2*ncol(x), endpoint)
   if(is.null(t)) {
     if(endpoint <= nT) {
       t <- floor(seq(1, endpoint, length.out=floor(knots)))
@@ -99,25 +99,27 @@ iNextPD.Sam <- function(abun, labels, phy, q, size=NULL, endpoint=2*ncol(abun), 
     t <- sort(unique(t))
   }
   
-  if (!is.numeric(conf) || conf > 1 || conf < 0) {
-    warning("\"conf\"(confidence level) must be a numerical value between 0 and 1, We use \"conf\" = 0.95 to calculate!")
-    conf <- 0.95
+  if(se==TRUE & !is.null(conf)){
+    if (!is.numeric(conf) || conf > 1 || conf < 0) {
+      warning("\"conf\"(confidence level) must be a numerical value between 0 and 1, We use \"conf\" = 0.95 to calculate!")
+      conf <- 0.95
+    }
   }
   
-  tmp <- ExpandData_(abun, labels, phy, datatype="incidence_raw")
+  tmp <- ExpandData_(x, labels, phy, datatype="incidence_raw")
   U <- tmp$branch_abun
   L <- tmp$branch_length
-  xx <- rowSums(abun)
+  xx <- rowSums(x)
   names(xx) <- labels
-  x <- xx[names(phy$leaves)]
-  phd.hat <- PhD.m(nT, x, U, L, q, t)
+  xx <- xx[names(phy$leaves)]
+  phd.hat <- PhD.m(nT, xx, U, L, q, t)
   C.hat <- Coverage_(Spec, "incidence",t)
   
   if(se==TRUE & nboot > 0 & length(x) > 1) {
     Prob.hat <- SPBoot_(Spec, "incidence")
     Abun.Mat <- t(sapply(Prob.hat, function(p) rbinom(nboot, nT, p)))
     
-    BootComm <- PDBoot_(abun, labels, phy, "incidence_raw")
+    BootComm <- PDBoot_(x, labels, phy, "incidence_raw")
     Prob.hat <- BootComm$branch_abun
     L.hat <- BootComm$branch_length
     U.Mat <- t(sapply(Prob.hat, function(p) rbinom(nboot, nT, p)))
@@ -150,30 +152,34 @@ iNextPD.Sam <- function(abun, labels, phy, q, size=NULL, endpoint=2*ncol(abun), 
 
 #' iNterpolation and EXTrapolation of Hill number
 #' 
-#' \code{iNextPD}: Interpolation and extrapolation of Hill number with order q
+#' \code{iNextPD}: Interpolation and extrapolation of Hill number with order q.
 #' 
-#' @param x a matrix, data.frame (species by sites), or list of species abundances or incidence frequencies. If \code{datatype = "incidence"}, then the first entry of the input data must be total number of sampling units in each column or list. 
-#' @param labels species names for object x
-#' @param phy a phylog objcet for input phylo-tree
+#' @param x a matrix, data.frame (species by sites), or list of species abundances or incidence data.
+#' @param labels species names for object x.
+#' @param phy a phylog objcet for input phylo-tree.
 #' @param q a numeric value specifying the diversity order of Hill number .
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}),  
-#' sampling-unit-based incidence frequencies data (\code{datatype = "incidence_freq"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
+#' or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
 #' @param size an integer vector of sample sizes (number of individuals or sampling units) for which diversity estimates will be computed. 
 #' If NULL, then diversity estimates will be computed for those sample sizes determined by the specified/default \code{endpoint} and \code{knots} .
 #' @param endpoint an integer specifying the sample size that is the \code{endpoint} for rarefaction/extrapolation. 
 #' If NULL, then \code{endpoint} \code{=} double reference sample size.
 #' @param knots an integer specifying the number of equally-spaced \code{knots} (say K, default is 40) between size 1 and the \code{endpoint};
 #' each knot represents a particular sample size for which diversity estimate will be calculated.  
-#' If the \code{endpoint} is smaller than the reference sample size, then \code{iNEXT()} computes only the rarefaction esimates for approximately K evenly spaced \code{knots}. 
-#' If the \code{endpoint} is larger than the reference sample size, then \code{iNEXT()} computes rarefaction estimates for approximately K/2 evenly spaced \code{knots} between sample size 1 and the reference sample size, and computes extrapolation estimates for approximately K/2 evenly spaced \code{knots} between the reference sample size and the \code{endpoint}.
-#' @param se a logical variable to calculate the bootstrap standard error and 95\% confidence interval.
+#' If the \code{endpoint} is smaller than the reference sample size, then \code{iNextPD()} computes only the rarefaction esimates for approximately K evenly spaced \code{knots}. 
+#' If the \code{endpoint} is larger than the reference sample size, then \code{iNextPD()} computes rarefaction estimates for approximately K/2 evenly spaced \code{knots} between sample size 1 and the reference sample size, and computes extrapolation estimates for approximately K/2 evenly spaced \code{knots} between the reference sample size and the \code{endpoint}.
+#' @param se a logical variable to calculate the bootstrap standard error and \code{conf} confidence interval.
+#' @param conf a positive number < 1 specifying the level of confidence interval, default is 0.95.
 #' @param nboot an integer specifying the number of replications.
 #' @return a list of three objects: \code{$DataInfo} for summarizing data information; 
 #' \code{$iNextPDEst} for showing diversity estimates for rarefied and extrapolated samples along with related statistics;
-#' \code{$AsyPDEst} for showing asymptotic diversity estimates along with related statistics, and \code{$ExpandData} (xi, Li, i=1,2,...,B)
+#' \code{$AsyPDEst} for showing asymptotic diversity estimates along with related statistics, and \code{$ExpandData} (xi, Li, i=1,2,...,B).
 #' @examples
 #' data(bird)
-#' iNextPD(bird.inc, labels=rownames(bird.inc[[1]]), phy=bird.phy, q=0, datatype="incidence_raw")
+#' bird.abu <- bird$abun
+#' bird.lab <- rownames(bird$abun)
+#' bird.phy <- ade4::newick2phylog(bird$tre)
+#' iNextPD(bird.abu, labels=bird.lab, phy=bird.phy, q=0, datatype="abundance")
 #' @export
 #' 
 iNextPD <- function(x, labels, phy, q=0, datatype="abundance", size=NULL, endpoint=NULL, knots=40, se=FALSE, conf=0.95, nboot=50){
@@ -187,10 +193,10 @@ iNextPD <- function(x, labels, phy, q=0, datatype="abundance", size=NULL, endpoi
     if(datatype == "abundance"){
       if(sum(x)==0) stop("Zero abundance counts in one or more sample sites")
       x <- as.numeric(unlist(x))
-      out <- iNextPD.Ind(abun=x, labels, phy, q, size, endpoint, knots, se, conf, nboot)
+      out <- iNextPD.Ind(x, labels, phy, q, size, endpoint=ifelse(is.null(endpoint), 2*sum(x), endpoint), knots, se, conf, nboot)
     }
     if(datatype == "incidence_raw"){
-      y <- as.incfreq(x)
+      y <- iNEXT::as.incfreq(x)
       t <- y[1]
       y <- y[-1]
       if(t>sum(y)){
@@ -198,7 +204,7 @@ iNextPD <- function(x, labels, phy, q=0, datatype="abundance", size=NULL, endpoi
       }
       if(sum(y)==0) stop("Zero incidence frequencies in one or more sample sites")
       
-      out <- iNextPD.Sam(abun=x, labels, phy, q, size, endpoint, knots, se, conf, nboot)  
+      out <- iNextPD.Sam(x, labels, phy, q, size, endpoint=ifelse(is.null(endpoint), 2*max(x), endpoint), knots, se, conf, nboot)  
     }
     out
   }
