@@ -3,21 +3,21 @@ Coverage_ <- function(data, datatype, m){
   datatype <- check_datatype(datatype)
   ifelse(class(data)=="matrix" || class(data)=="data.frame", type <- "raw", type <- "numeric") 
   ifelse(type == "raw", x <- rowSums(data), x <- data )
-  if(type=="raw" || datatype=='incidence_raw') u <- sum(x)
+  #if(type=="raw" || datatype=='incidence_raw') u <- sum(data)
   
   # checking ambiguous case
   if(datatype=="abundance"){
     # if(sum(x)!=n) warning("argument n is not equal to total sample size.")
     n <- sum(x)
-  }
-  if(datatype=="incidence"){
+  }else if(datatype=="incidence"){
     # if(max(x)!=n) warning("argument n is not equal to total sampling units.")
     n <- x[1]
     x <- x[-1]
-  }
-  if(datatype=="incidence_raw"){
+    u <- sum(x)
+  }else if(datatype=="incidence_raw"){
     # if(ncol(data)!=n) warning("argument n is not equal to total sampling units.")
     n <- ncol(data)
+    u <- sum(data)
   }
   
   f1 <- sum(x == 1)
@@ -34,9 +34,9 @@ Coverage_ <- function(data, datatype, m){
       a <- 1-sum(xx / n * exp(lgamma(n-xx+1)-lgamma(n-xx-n+2)-lgamma(n)+lgamma(1)))
       b <- 1-f1/n*A
       dat <- data.frame(x=c(n-1, n), y=c(a,b))
-      fit <- lm(log(y)~x, dat)
-      a[1] <- exp(predict(fit, newdata=data.frame(x=m)))
-      a
+      fit <- stats::lm(log(y)~x, dat)
+      a[1] <- exp(stats::predict(fit, newdata=data.frame(x=m)))
+      out <- a
     }else if(m == n){
       out <- 1-f1/n*A
     }else if(m > n) {
@@ -54,9 +54,9 @@ Coverage_ <- function(data, datatype, m){
       a <- 1-sum(xx / u * exp(lgamma(n-xx+1)-lgamma(n-xx-n+2)-lgamma(n)+lgamma(1)))
       b <- 1-f1/u*A
       dat <- data.frame(x=c(n-1, n), y=c(a,b))
-      fit <- lm(log(y)~x, dat)
-      a[1] <- exp(predict(fit, newdata=data.frame(x=m)))
-      a
+      fit <- stats::lm(log(y)~x, dat)
+      a[1] <- exp(stats::predict(fit, newdata=data.frame(x=m)))
+      out <- a
     }else if(m == n){
       out <- 1-f1/u*A
     }else if(m > n){
@@ -81,6 +81,7 @@ Coverage_ <- function(data, datatype, m){
 #' If \code{datatype = "incidence_freq"}, then the first entry of the input data must be total number of sampling units, followed by species incidence frequencies.
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}),  
 #' sampling-unit-based incidence frequencies data (\code{datatype = "incidence_freq"}) or species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
+#' @param m an integer vector of sample sizes (number of individuals or sampling units) for which diversity estimates will be computed.
 #' @return a data.frame with sample size and sample coverage.
 #' @examples 
 #' data(bird)

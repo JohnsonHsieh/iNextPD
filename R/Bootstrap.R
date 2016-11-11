@@ -26,41 +26,35 @@ SPBoot_ <- function(x, datatype){
   }
 }
 
-#' Estimation of species reletive abundance distribution
+#' Estimation of species relative abundance or detection probability distribution
 #' 
-#' \code{SPBoot}: Expand bootstraping branch abundance/incience and branch length
+#' \code{SPBoot}: Expand bootstraping species relative abundance or detection probability
 #' 
 #' @param x a vector/matrix/list of species abundances or a matrix of raw incidence table.\cr 
-#' @param labels a vector of species name for input data.\cr 
-#' @param phy a phylogenetic tree with \code{"phylog"} class.\cr 
-#' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}), species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
-#' @return a data.frame with sample size and sample coverage.
+#' @param datatype of input data: individual-based abundance data (datatype = "abundance"), sampling-unit-based incidence frequencies data (datatype = "incidence_freq") or species by sampling-units incidence matrix (datatype = "incidence_raw")..
+#' @return a list of vector with species relative abundance or detection probability distribution.
+#' @export
 #' @examples 
-#' data(bird.inc)
-#' data(bird.phy)
-#' PDBoot(bird.inc, labels=rownames(bird.inc[[1]]), phy=bird.phy, datatype="incidence_raw")
-#' 
-SPBoot <- function(x, labels, phy, datatype="abundance"){
-  if (!inherits(phy, "phylog")) 
-    stop("Non convenient data")
-  
+#' data(bird)
+#' bird.inc <- bird$inci
+#' SPBoot(bird$abun, datatype="abundance")
+#' SPBoot(bird$inci, datatype="incidence_raw")
+SPBoot <- function(x, datatype="abundance"){
+
   datatype <- check_datatype(datatype)
   
-  if(datatype=="incidence_freq" | datatype=="incidence") 
-    stop('only support datatype="incidence_raw"')
-  
   if(class(x)=="list"){
-    lapply(x, function(x) PDBoot_(x, labels, phy, datatype))
-  }else if(class(abun) %in% c("matrix","data.frame") & datatype=="abundance"){
-    apply(x, 2, function(x) PDBoot_(x, labels, phy, datatype))
+    lapply(x, function(x) SPBoot_(x, datatype))
+  }else if(class(x) %in% c("matrix","data.frame") & datatype=="abundance"){
+    apply(x, 2, function(x) SPBoot_(x, datatype))
   }else{
-    PDBoot_(x, labels, phy, datatype)
+    SPBoot_(x, datatype)
   }
 }
 
 
 
-#' Show {(ai_hat, Li_hat); i=1, 2,.., Bost, ..., Best}
+# Show {(ai_hat, Li_hat); i=1, 2,.., Bost, ..., Best}
 PDBoot_ <- function(abun, labels, phy, datatype="abundance"){
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
@@ -109,13 +103,14 @@ PDBoot_ <- function(abun, labels, phy, datatype="abundance"){
     Li <- c(L.obs, L0)
     data.frame("branch_abun"=ai, "branch_length"=Li)
   }else if(datatype=="incidence_raw"){
-    y <- as.incfreq(abun)
+    y <- iNEXT::as.incfreq(abun)
     t <- y[1]
     y <- y[-1]
     names(y) <- labels
     y <- y[names(phy$leaves)]
     Ut <- sum(y)
     
+    #abun <- data.frame(abun)
     rownames(abun) <- labels
     abun <- abun[names(phy$leaves),]
     
@@ -165,26 +160,31 @@ PDBoot_ <- function(abun, labels, phy, datatype="abundance"){
 #' @param labels a vector of species name for input data.\cr 
 #' @param phy a phylogenetic tree with \code{"phylog"} class.\cr 
 #' @param datatype data type of input data: individual-based abundance data (\code{datatype = "abundance"}), species by sampling-units incidence matrix (\code{datatype = "incidence_raw"}).
-#' @return a data.frame with sample size and sample coverage.
+#' @return a list of data.frame with bootstraping branch abundance/incience and branch length.
+#' @export
 #' @examples 
-#' data(bird.inc)
-#' data(bird.phy)
-#' PDBoot(bird.inc, labels=rownames(bird.inc[[1]]), phy=bird.phy, datatype="incidence_raw")
+#' data(bird)
+#' bird.lab <- rownames(bird$abun)
+#' bird.phy <- ade4::newick2phylog(bird$tre)
+#' bird.inc <- bird$inci
+#' PDBoot(bird.inc, labels=bird.lab, phy=bird.phy, datatype="incidence_raw")
 #' 
 PDBoot <- function(x, labels, phy, datatype="abundance"){
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
-  
   datatype <- check_datatype(datatype)
+  
+  # no visible binding for global variable [variable name]
+  abun <- NULL
   
   if(datatype=="incidence_freq" | datatype=="incidence") 
     stop('only support datatype="incidence_raw"')
   
   if(class(x)=="list"){
-    lapply(x, function(x) PDBoot_(abun=x, labels, phy, datatype))
+    lapply(x, function(x) PDBoot_(x, labels, phy, datatype))
   }else if(class(abun) %in% c("matrix","data.frame") & datatype=="abundance"){
-    apply(x, 2, function(x) PDBoot_(abun=x, labels, phy, datatype))
+    apply(x, 2, function(x) PDBoot_(x, labels, phy, datatype))
   }else{
-    PDBoot_(abun=x, labels, phy, datatype)
+    PDBoot_(x, labels, phy, datatype)
   }
 }

@@ -18,7 +18,7 @@ Stirling2 <- function(n,m)
   round(sum( sig * k^n /(ga * rev(ga))))
 }
 
-#' accumulation function for qPD(m)
+# accumulation function for qPD(m)
 PhD.m.mle <- function(p, labels=names(p), phy, q, m, datatype="abundance"){
   if (!inherits(phy, "phylog")) 
     stop("Non convenient data")
@@ -61,12 +61,14 @@ PhD.m.mle <- function(p, labels=names(p), phy, q, m, datatype="abundance"){
 
 
 PhD.m.Rcpp <- function(n, x, U, L, q, m){
-  require("Rcpp")
+  #require("Rcpp")
+  # no visible binding for global variable [variable name]
+  RPD <- NULL
   tmp <- as.matrix(cbind(U,L))
   data <- x
   t_bar <- sum(tmp[,1] * tmp[,2] / n)
   tmp <- as.matrix(tmp)
-  cppFunction('
+  Rcpp::cppFunction('
               double RPD(NumericMatrix x , int n  , int m , int q) {
               int nrow = x.nrow();
               double tbar=0;

@@ -7,8 +7,8 @@
 print.iNextPD <- function(x, ...){
   site.n <- nrow(x$DataInfo)
   order.n <- ifelse(site.n > 1, 
-                    paste(unique(x$iNextEst[[1]]$order), collapse = ", "),
-                    paste(unique(x$iNextEst$order), collapse = ", "))
+                    paste(unique(x$iNextPDEst[[1]]$order), collapse = ", "),
+                    paste(unique(x$iNextPDEst$order), collapse = ", "))
   cat("Compare ", site.n, " assemblages with Hill number order q = ", order.n,".\n", sep="")
   cat("$class: iNEXT\n\n")
   cat("$DataInfo: basic data information\n")
@@ -31,7 +31,7 @@ print.iNextPD <- function(x, ...){
   print(x$AsyPDEst)
   cat("\n")
   cat("NOTE1: Only show five estimates, call iNextPD.object$iNextPDEst to show complete output.\n")
-  cat("NOTE2: call iNextPD.object$ExpandData to show complete branch abundance/incience and branch length (Ui, Li), i = 1, 2, ..., B.\n")
+  cat("NOTE2: call iNextPD.object$ExpandData to show the completed branch abundance/incience and branch length (Ui, Li), i = 1, 2, ..., B.\n")
   return(invisible())
 }
 
@@ -46,7 +46,9 @@ print.iNextPD <- function(x, ...){
 #' @param se a logical variable to display confidence interval around the estimated sampling curve.
 #' @param show.legend a logical variable to display legend.
 #' @param show.main a logical variable to display title.
-#' @param col a vector for plotting color
+#' @param col a vector for plotting color.
+#' @param xlab a title for the x axis.
+#' @param ylab a title for the y axis.
 #' @param ... arguments to be passed to methods, such as graphical parameters (\code{\link{par}}).
 #' @examples
 #' 
@@ -54,7 +56,7 @@ print.iNextPD <- function(x, ...){
 #' data(bird)
 #' bird.phy <- ade4::newick2phylog(bird$tre)
 #' bird.lab <- rownames(bird$abun)
-#' out1 <- iNextPD(bird$abun$North.site, bird.lab, phy, 
+#' out1 <- iNextPD(bird$abun$North.site, bird.lab, bird.phy, 
 #'         q=1, datatype="abundance", endpoint=500)
 #' plot(x=out1, type=1)
 #' plot(x=out1, type=2)
@@ -62,7 +64,7 @@ print.iNextPD <- function(x, ...){
 #' 
 
 #' @export
-plot.iNextPD <- function(x, type=1, se=TRUE, show.legend=TRUE, show.main=TRUE, col=NULL,...){
+plot.iNextPD <- function(x, type=1, se=TRUE, show.legend=TRUE, show.main=TRUE, col=NULL, xlab=NULL, ylab=NULL,...){
   
   if(class(x) != "iNextPD")
     stop("invalid object class")
@@ -97,8 +99,8 @@ plot.iNextPD <- function(x, type=1, se=TRUE, show.legend=TRUE, show.main=TRUE, c
   if(type==1L) {
     z$x <- z[,1]
     z$y <- z$qPD
-    if(!is.null(xlab)) xlab <- ifelse(names(x$DataInfo)[2]=="n", "Number of individuals", "Number of sampling units")
-    if(!is.null(ylab)) ylab <- "Phylogenetic diversity"
+    if(is.null(xlab)) xlab <- ifelse(names(x$DataInfo)[2]=="n", "Number of individuals", "Number of sampling units")
+    if(is.null(ylab)) ylab <- "Phylogenetic diversity"
     if(se){
       z$y.lwr <- z[,5]
       z$y.upr <- z[,6]
@@ -109,8 +111,8 @@ plot.iNextPD <- function(x, type=1, se=TRUE, show.legend=TRUE, show.main=TRUE, c
     }
     z$x <- z[,1]
     z$y <- z$SC
-    if(!is.null(xlab)) xlab <- ifelse(names(x$DataInfo)[2]=="n", "Number of individuals", "Number of sampling units")
-    if(!is.null(ylab)) ylab <- "Sample coverage"
+    if(is.null(xlab)) xlab <- ifelse(names(x$DataInfo)[2]=="n", "Number of individuals", "Number of sampling units")
+    if(is.null(ylab)) ylab <- "Sample coverage"
     if(se){
       z$y.lwr <- z[,8]
       z$y.upr <- z[,9]
@@ -118,8 +120,8 @@ plot.iNextPD <- function(x, type=1, se=TRUE, show.legend=TRUE, show.main=TRUE, c
   }else if(type==3L){
     z$x <- z$SC
     z$y <- z$qPD
-    if(!is.null(xlab)) xlab <- "Sample coverage"
-    if(!is.null(ylab)) ylab <- "Phylogenetic diversity"
+    if(is.null(xlab)) xlab <- "Sample coverage"
+    if(is.null(ylab)) ylab <- "Phylogenetic diversity"
     if(se){
       z$y.lwr <- z[,5]
       z$y.upr <- z[,6]
@@ -223,23 +225,23 @@ plot.iNextPD <- function(x, type=1, se=TRUE, show.legend=TRUE, show.main=TRUE, c
 #' data(bird)
 #' bird.phy <- ade4::newick2phylog(bird$tre)
 #' bird.lab <- rownames(bird$abun)
-#' out1 <- iNextPD(bird$abun$North.site, bird.lab, phy, 
-#'         q=1, datatype="abundance", endpoint=500)
+#' out1 <- iNextPD(bird$abun$North.site, bird.lab, bird.phy, 
+#'         q=1, datatype="abundance", endpoint=400, se=TRUE)
 #' ggiNEXT(x=out1, type=1)
 #' ggiNEXT(x=out1, type=2)
 #' ggiNEXT(x=out1, type=3)
 #' 
 #'\dontrun{
 #' # single-assemblage incidence data with three orders q
-#' data(ant)
-#' size <- round(seq(10, 500, length.out=20))
-#' y <- iNEXT(ant$h500m, q=c(0,1,2), datatype="incidence_freq", size=size, se=FALSE)
-#' ggiNEXT(y, se=FALSE, color.var="order")
+#' out2 <- iNextPD(bird$inci$North.site, bird.lab, bird.phy, 
+#'         q=c(0,1,2), datatype="incidence_raw", endpoint=25)
+#' ggiNEXT(out2, se=FALSE, color.var="order")
 #' 
 #' # multiple-assemblage abundance data with three orders q
-#' z <- iNEXT(spider, q=c(0,1,2), datatype="abundance")
-#' ggiNEXT(z, facet.var="site", color.var="order")
-#' ggiNEXT(z, facet.var="both", color.var="both")
+#' out3 <-  iNextPD(bird$abun, bird.lab, bird.phy, 
+#'         q=c(0,1,2), datatype="abundance", endpoint=400)
+#' ggiNEXT(out3, facet.var="site", color.var="order")
+#' ggiNEXT(out3, facet.var="both", color.var="both")
 #'}
 #' @export
 #' 
@@ -405,28 +407,32 @@ ggiNEXT.default <- function(x, ...){
 #' @param data not used by this method
 #' @param type three types of plots: sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
 #' sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).                 
+#' @param se a logical variable to calculate the bootstrap standard error and \code{conf} confidence interval.
 #' @param ... not used by this method
 #' @export
 #' @examples
-#' data(spider)
 #' # single-assemblage abundance data
-#' out1 <- iNEXT(spider$Girdled, q=0, datatype="abundance")
+#' data(bird)
+#' bird.lab <- rownames(bird$abun)
+#' bird.phy <- ade4::newick2phylog(bird$tre)
+#' out1 <- iNextPD(bird$abun$North.site, bird.lab, bird.phy, 
+#'         q=0, datatype="abundance", endpoint=400)
 #' ggplot2::fortify(out1, type=1)
 
-fortify.iNextPD <- function(model, data = model$iNextPDEst, type = 1, ...) {
+fortify.iNextPD <- function(model, data = model$iNextPDEst, type = 1, se=TRUE,...) {
   datatype <- ifelse(names(model$DataInfo)[2]=="n","abundance","incidence")
   z <- data
   if(class(z) == "list"){
     z <- data.frame(do.call("rbind", z), site=rep(names(z), sapply(z, nrow)))
     rownames(z) <- NULL
   }else{
-    z$site <- ""
+    z$site <- "Site1"
   }
   
-  if(ncol(z)==7) {
+  if(ncol(z)==6 & se==TRUE) {
     warning("invalid se setting, the iNEXT object do not consist confidence interval")
     se <- FALSE
-  }else if(ncol(z)>7) {
+  }else if(ncol(z)>6) {
     se <- TRUE
   }
   

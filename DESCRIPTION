@@ -1,15 +1,15 @@
 Package: iNextPD
 Type: Package
-Title: iNterpolation and EXTrapolation for phylogenetic diversity
-Version: 0.2.0
-Date: 2016-03-22
+Title: Interpolation and Eextrapolation for Phylogenetic Diversity
+Version: 0.3.0
+Date: 2016-11-10
 Author: T. C. Hsieh, Chun-Huo Chiu, and Anne Chao
 Authors@R: c(person("T. C.", "Hsieh", role = c("aut", "cre", "cph"), email =
     "euler96@gmail.com"),  person("Chun-Huo", "Chiu", role = "ths", email =
     "otterfinder@yahoo.com.tw"), person("Anne", "Chao", role = "ths", email =
     "chao@stat.nthu.edu.tws"))
 Maintainer: T. C. Hsieh <euler96@gmail.com>
-Description: iNterpolation and EXTrapolation for phylogenetic diversity
+Description: iNterpolation and EXTrapolation for phylogenetic diversity.
 URL: http://chao.stat.nthu.edu.tw/blog/software-download/
 License: GPL (>= 3)
 Depends:
@@ -18,6 +18,16 @@ Imports:
     stats,
     graphics,
     ade4,
-    ggplot2
+    ggplot2,
+    Rcpp,
+    iNEXT
+Suggests:
+    grid,
+    ggthemes,
+    gridExtra
 BugReports: https://github.com/JohnsonHsieh/iNextPD/issues
 LazyLoad: yes
+RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
