@@ -7,7 +7,7 @@ citEntry(
 		 entry = 'manual',
 		 title = paste('iNextPD:', meta$Title),
 		 author = personList(as.person("T. C. Hsieh"),
-    	                   as.person("Anne Chao")),
+    	                   as.person("Anne Chao")), 
 		 year = year,
 		 note = note,
 		 url = "http://chao.stat.nthu.edu.tw/blog/software-download/",
