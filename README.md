@@ -291,12 +291,12 @@ For example, the following command returns the species diversity with a specifie
 estimatePD(bird$abun, bird.lab, bird.phy, "abundance", 
            base="coverage", level=0.975, conf=0.95)
          site        m       method order    SC       qPD qPD.95.LCL qPD.95.UCL
-1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1131.5577  1364.6660
-3  North.site 227.0711 extrapolated     1 0.975  439.4657   389.6999   489.2315
-5  North.site 227.0711 extrapolated     2 0.975  212.5806   182.6916   242.4695
-8  South.site 247.8890 interpolated     0 0.975 1367.1348  1267.0899  1467.1798
-10 South.site 247.8890 interpolated     1 0.975  451.9783   416.5065   487.4501
-12 South.site 247.8890 interpolated     2 0.975  205.6565   178.5769   232.7361
+1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1136.8742  1359.3495
+3  North.site 227.0711 extrapolated     1 0.975  439.4657   383.1780   495.7535
+5  North.site 227.0711 extrapolated     2 0.975  212.5806   182.0907   243.0705
+8  South.site 247.8890 interpolated     0 0.975 1367.1348  1261.9364  1472.3333
+10 South.site 247.8890 interpolated     1 0.975  451.9783   404.8069   499.1497
+12 South.site 247.8890 interpolated     2 0.975  205.6565   174.9561   236.3569
 ```
 
 GRAPHIC DISPLAYS: FUNCTION `ggiNEXT()`
@@ -601,12 +601,12 @@ In [`iNextPD`](https://cran.r-project.org/package=iNextPD), we provide a S3 `ggp
 df <- fortify(out, type=1)
 head(df)
    datatype plottype       site       method order  x       y   y.lwr   y.upr
-1 abundance        1 North.site interpolated     0  1  82.858  76.312  89.403
-2 abundance        1 North.site interpolated     0 12 428.313 388.507 468.118
-3 abundance        1 North.site interpolated     0 23 607.781 555.312 660.250
-4 abundance        1 North.site interpolated     0 34 726.034 665.616 786.451
-5 abundance        1 North.site interpolated     0 45 811.060 743.852 878.269
-6 abundance        1 North.site interpolated     0 56 876.145 802.674 949.617
+1 abundance        1 North.site interpolated     0  1  82.858  77.440  88.275
+2 abundance        1 North.site interpolated     0 12 428.313 393.504 463.122
+3 abundance        1 North.site interpolated     0 23 607.781 563.145 652.417
+4 abundance        1 North.site interpolated     0 34 726.034 674.983 777.084
+5 abundance        1 North.site interpolated     0 45 811.060 753.490 868.630
+6 abundance        1 North.site interpolated     0 56 876.145 811.845 940.445
 
 df.point <- df[which(df$method=="observed"),]
 df.line <- df[which(df$method!="observed"),]
