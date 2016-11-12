@@ -19,13 +19,13 @@ Imports:
     ade4,
     ggplot2,
     Rcpp,
-    iNEXT,
-    gridExtra,
-    ggthemes
+    iNEXT
 BugReports: https://github.com/JohnsonHsieh/iNextPD/issues
 LazyLoad: yes
 RoxygenNote: 5.0.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    gridExtra,
+    ggthemes
 VignetteBuilder: knitr
