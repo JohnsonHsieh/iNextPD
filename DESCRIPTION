@@ -1,9 +1,8 @@
 Package: iNextPD
 Type: Package
 Title: Interpolation and Extrapolation for Phylogenetic Diversity
-Version: 0.3.0
+Version: 0.3.1
 Date: 2016-11-10
-Author: T. C. Hsieh, Chun-Huo Chiu, and Anne Chao
 Authors@R: c(person("T. C.", "Hsieh", role = c("aut", "cre", "cph"), email =
     "euler96@gmail.com"),  person("Chun-Huo", "Chiu", role = "ths", email =
     "otterfinder@yahoo.com.tw"), person("Anne", "Chao", role = "ths", email =
@@ -20,14 +19,13 @@ Imports:
     ade4,
     ggplot2,
     Rcpp,
-    iNEXT
-Suggests:
-    grid,
-    ggthemes,
-    gridExtra
+    iNEXT,
+    gridExtra,
+    ggthemes
 BugReports: https://github.com/JohnsonHsieh/iNextPD/issues
 LazyLoad: yes
 RoxygenNote: 5.0.1
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown
 VignetteBuilder: knitr

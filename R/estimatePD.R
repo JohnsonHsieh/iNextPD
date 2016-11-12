@@ -122,7 +122,10 @@ invSize <- function(x, datatype="abundance", size=NULL, digits=4){
 #' bird.abu <- bird$abun
 #' bird.lab <- rownames(bird$abun)
 #' bird.phy <- ade4::newick2phylog(bird$tre)
+#' estimatePD(bird.abu, bird.lab, bird.phy, "abundance", base="size", level=NULL, conf=NULL)
+#' \dontrun{
 #' estimatePD(bird.abu, bird.lab, bird.phy, "abundance", base="size", level=NULL)
+#' }
 #' @export
 estimatePD <- function(x, labels, phy, datatype="abundance", base="size", level=NULL, conf=0.95, digits=4){
   datatype <- check_datatype(datatype)
