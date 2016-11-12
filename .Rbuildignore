@@ -5,3 +5,4 @@ README*
 ^README-.*\.png$
 .RData
 .Rhistory
+^.*\.DS_Store$
