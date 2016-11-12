@@ -385,6 +385,7 @@ ggiNEXT.iNextPD <- function(x, type=1, se=TRUE, facet.var="none", color.var="sit
       theme(legend.position="bottom",
             legend.title=element_blank())
   }
+  g <- g + theme(legend.box = "vertical")
   return(g)
   
 }

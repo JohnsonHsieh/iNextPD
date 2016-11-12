@@ -15,7 +15,7 @@ Introduction to iNextPD (R package)
 <h5>
 <b>Hsieh, T. C. and Anne Chao</b> <br><br> <i>Institute of Statistics, National Tsing Hua University, Hsin-Chu, Taiwan 30043</i>
 </h5>
-<br> `iNextPD` (**iN**terpolation and **ext**rapolation for **P**hylogenetic **D**iversity) is an R package provides the rarefaction and extrapolation framework to making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages (Hsieh and Chao, Systematic Biology, 2016). In this document, we provide a quick introduction demonstrating how to run `iNextPD`. Detailed information about `iNextPD` functions is provided in the iNextPD Manual, also available in [CRAN](https://cran.r-project.org/package=iNextPD). See Chao et al. (2015) and Hsieh and Chao (2016) for methodologies. An online version of `iNEXT` (<https://chao.shinyapps.io/PhDOnline/>) is also available for users without an R background. A neutral theory of species diversity is included in Chao et al. (2014); and a brief description of methods and R package (`iNEXT`) are included in an application paper by Hsieh, Ma & Chao (2016).
+<br> `iNextPD` (**iN**terpolation and **ext**rapolation for **P**hylogenetic **D**iversity) is an R package provides the rarefaction and extrapolation framework to making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages (Hsieh and Chao, Systematic Biology, 2016). In this document, we provide a quick introduction demonstrating how to run `iNextPD`. Detailed information about `iNextPD` functions is provided in the iNextPD Manual, also available in [CRAN](https://cran.r-project.org/package=iNextPD). See Chao et al. (2015) and Hsieh and Chao (2016) for methodologies. An online version of `PhDOnline` (<https://chao.shinyapps.io/PhDOnline/>) is also available for users without an R background. A neutral theory of species diversity is included in Chao et al. (2014); and a brief description of methods and R package (`iNEXT`) are included in an application paper by Hsieh, Ma & Chao (2016).
 
 `iNextPD` is an extension for `iNEXT`, which extending trdional rarefaction and extrapoltion framework for species diversity to abundance-sensitive phylogenetic diversity. `iNextPD` focuses on three measures of Hill numbers of order q: Faith's PD (`q = 0`), a simple transformation of phylogenetic entropy (`q = 1`) and and a simple transformation of Rao's quadratic entropy (`q = 2`). For each diversity measure, `iNextPD` uses the observed sample of abundance or incidence data (called the “reference sample”) to compute diversity estimates and the associated 95% confidence intervals for the following two types of rarefaction and extrapolation (R/E):
 
@@ -47,6 +47,7 @@ install_github('JohnsonHsieh/iNextPD')
 ## import packages
 library(iNextPD)
 library(ggplot2)
+library(ade4)
 ```
 
 **Remark**: In order to install `devtools` package, you should update R to the latest version. Also, to get `install_github` to work, you should install the `httr` package.
@@ -181,13 +182,36 @@ Three types of data are supported:
 RAREFACTION/EXTRAPOLATION VIA EXAMPLES
 --------------------------------------
 
-Bird phylogeny and survey dataset is included in iNextPD package. This data set describes the phylogeny (`$tre`) of 41 birds as reported by Jetz et al. (2012). It also gives the two sites of species abundance (`$abun`) and incidence (`$inci`) data to these 41 species in November 2012 at Barrington Tops National Park, Australia. For these data, the following commands display basic data information and run the `iNextPD()` function for `q = 0`.
+Bird phylogeny and survey dataset is included in iNextPD package. This data set describes the phylogeny (`$tre`) of 41 birds as reported by Jetz et al. (2012). It also gives the two sites of species abundance (`$abun`) and incidence (`$inci`) data to these 41 species in November 2012 at Barrington Tops National Park, Australia. For this data, the following commands display basic data visualization:
 
 ``` r
 data(bird)
 str(bird)
+List of 3
+ $ tre : chr "(((((Alisterus_scapularis:31.96595541,Platycercus_elegans:31.96595545):13.04819101,(Cacatua_galerita:32.14669035,Calyptorhynchu"| __truncated__
+ $ abun:'data.frame':   41 obs. of  2 variables:
+  ..$ North.site: int [1:41] 0 0 41 0 3 1 5 4 4 11 ...
+  ..$ South.site: int [1:41] 3 18 31 2 1 2 5 1 6 32 ...
+ $ inci:List of 2
+  ..$ North.site: num [1:41, 1:12] 0 0 1 0 0 0 0 0 1 1 ...
+  .. ..- attr(*, "dimnames")=List of 2
+  .. .. ..$ : chr [1:41] "Acanthiza_lineata" "Acanthiza_nana" "Acanthiza_pusilla" "Acanthorhynchus_tenuirostris" ...
+  .. .. ..$ : chr [1:12] "F1O" "F2A" "F3A" "F3O" ...
+  ..$ South.site: num [1:41, 1:17] 1 0 0 0 0 0 0 0 0 1 ...
+  .. ..- attr(*, "dimnames")=List of 2
+  .. .. ..$ : chr [1:41] "Acanthiza_lineata" "Acanthiza_nana" "Acanthiza_pusilla" "Acanthorhynchus_tenuirostris" ...
+  .. .. ..$ : chr [1:17] "G.beech" "G1A" "G1C" "G2A" ...
 bird.lab <- rownames(bird$abun)
 bird.phy <- ade4::newick2phylog(bird$tre)
+# plot(bird.phy)
+table.phylog(bird$abun, bird.phy, csize=4, f.phylog=0.7)
+```
+
+<img src="README/README-unnamed-chunk-5-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+For this data, the following commands display basic data information and run the `iNextPD()` function for `q = 0`.
+
+``` r
 iNextPD(x=bird$abun, labels=bird.lab, phy=bird.phy, 
         q=0, datatype="abundance")
 ```
@@ -266,20 +290,13 @@ For example, the following command returns the species diversity with a specifie
 ``` r
 estimatePD(bird$abun, bird.lab, bird.phy, "abundance", 
            base="coverage", level=0.975, conf=0.95)
-         site        m       method order    SC       qPD qPD.95.LCL
-1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1102.0086
-3  North.site 227.0711 extrapolated     1 0.975  439.4657   397.2367
-5  North.site 227.0711 extrapolated     2 0.975  212.5806   173.5876
-8  South.site 247.8890 interpolated     0 0.975 1367.1348  1289.6605
-10 South.site 247.8890 interpolated     1 0.975  451.9783   416.2718
-12 South.site 247.8890 interpolated     2 0.975  205.6565   175.3628
-   qPD.95.UCL
-1   1394.2150
-3    481.6948
-5    251.5736
-8   1444.6092
-10   487.6849
-12   235.9502
+         site        m       method order    SC       qPD qPD.95.LCL qPD.95.UCL
+1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1131.5577  1364.6660
+3  North.site 227.0711 extrapolated     1 0.975  439.4657   389.6999   489.2315
+5  North.site 227.0711 extrapolated     2 0.975  212.5806   182.6916   242.4695
+8  South.site 247.8890 interpolated     0 0.975 1367.1348  1267.0899  1467.1798
+10 South.site 247.8890 interpolated     1 0.975  451.9783   416.5065   487.4501
+12 South.site 247.8890 interpolated     2 0.975  205.6565   178.5769   232.7361
 ```
 
 GRAPHIC DISPLAYS: FUNCTION `ggiNEXT()`
@@ -322,78 +339,37 @@ The argument `facet.var="site"` in `ggiNEXT` function creates a separate plot fo
 ggiNEXT(out, type=1, facet.var="site")
 ```
 
-    Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-    else paste0(labels, : duplicated levels in factors are deprecated
-
-    Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-    else paste0(labels, : duplicated levels in factors are deprecated
-
-    Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-    else paste0(labels, : duplicated levels in factors are deprecated
-
-![](README/README-unnamed-chunk-13-1.png)
+<img src="README/README-unnamed-chunk-15-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 The argument `facet.var="order"` and `color.var="site"` creates a separate plot for each diversity order site, and within each plot, different colors are used for two sites.
 
 ``` r
 ggiNEXT(out, type=1, facet.var="order", color.var="site")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-14-1.png)
+<img src="README/README-unnamed-chunk-16-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 The following commands return the sample completeness curve in which different colors are used for the two sites:
 
 ``` r
 ggiNEXT(out, type=2, facet.var="none", color.var="site")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-15-1.png)
+<img src="README/README-unnamed-chunk-17-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 The following commands return the coverage‐based R/E sampling curves in which different colors are used for the two sites (`facet.var="site"`) and for three orders (`facet.var="order"`)
 
 ``` r
 ggiNEXT(out, type=3, facet.var="site")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-16-1.png)
+<img src="README/README-unnamed-chunk-18-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ``` r
 ggiNEXT(out, type=3, facet.var="order", color.var="site")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-17-1.png)
+<img src="README/README-unnamed-chunk-19-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 The argument `color.var = ("none", "order", "site" or "both")` is used to display curves in different colors for values of the specified variable. For example, the following code using the argument `color.var="site"` displays the sampling curves in different colors for the five sites. Note that `theme_bw()` is a ggplot2 function to modify display setting from grey background to black‐and‐white. The following commands return three types R/E sampling curves for ant data.
 
@@ -408,17 +384,9 @@ out.inc <- iNextPD(bird$inci, bird.lab, bird.phy,
 ggiNEXT(out.inc, type=1, color.var="site") + 
   theme_bw(base_size = 18) + 
   theme(legend.position="none")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-18-1.png)
+<img src="README/README-unnamed-chunk-20-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ``` r
 # Sample completeness curves
@@ -426,18 +394,9 @@ ggiNEXT(out.inc, type=2, color.var="site") +
   xlim(c(5,25)) + ylim(c(0.7,1)) +
   theme_bw(base_size = 18) + 
   theme(legend.position="none")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-Warning: Removed 8 rows containing missing values (geom_path).
 ```
 
-![](README/README-unnamed-chunk-19-1.png)
+<img src="README/README-unnamed-chunk-21-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ``` r
 # Coverage‐based R/E curves
@@ -446,23 +405,15 @@ ggiNEXT(out.inc, type=3, color.var ="site") +
   theme_bw(base_size = 18) +
   theme(legend.position="bottom",
         legend.title=element_blank())
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-Warning: Removed 5 rows containing missing values (geom_path).
 ```
 
-![](README/README-unnamed-chunk-20-1.png)
-\#\#\# Hacking `ggiNEXT()`
+<img src="README/README-unnamed-chunk-22-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+### Hacking `ggiNEXT()`
 
 The `ggiNEXT()` function is a wrapper around `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so can be manipulated using the `ggplot2` tools. The following are some useful examples for customizing graphs.
 
-### remove legend
+### Remove legend
 
 ``` r
 out2 <- iNextPD(bird$abun, bird.lab, bird.phy,
@@ -470,83 +421,50 @@ out2 <- iNextPD(bird$abun, bird.lab, bird.phy,
                endpoint=400, se=TRUE)
 ggiNEXT(out2, type=3, facet.var="site") + 
   theme(legend.position="none")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-21-1.png)
-\#\#\# change to theme and legend.position
+<img src="README/README-unnamed-chunk-23-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+### Change to theme and legend.position
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="site") + 
   theme_bw(base_size = 18) +
   theme(legend.position="right")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-22-1.png)
-\#\#\# display black‐white theme
+<img src="README/README-unnamed-chunk-24-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+### Display black‐white theme
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="order", grey=TRUE)
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-23-1.png)
-\#\#\# free the scale of axis
+<img src="README/README-unnamed-chunk-25-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+### Free the scale of axis
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="order") + 
   facet_wrap(~order, scales="free")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-24-1.png)
+<img src="README/README-unnamed-chunk-26-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
-### change the shape of reference sample size
+### Change the shape of reference sample size
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="site") +
   scale_shape_manual(values=c(19,19,19))
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-25-1.png)
-\#\# General customization The data visualization package [`ggplot2`](https://cran.r-project.org/package=ggplot2) provides `scale_` function to customize data which is mapped into an aesthetic property of a `geom_`. The following functions would help user to customize `ggiNEXT` output.
+<img src="README/README-unnamed-chunk-27-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+General customization
+---------------------
+
+The data visualization package [`ggplot2`](https://cran.r-project.org/package=ggplot2) provides `scale_` function to customize data which is mapped into an aesthetic property of a `geom_`. The following functions would help user to customize `ggiNEXT` output.
 
 -   change point shape: `scale_shape_manual`
 -   change line type : `scale_linetype_manual`
@@ -568,18 +486,12 @@ bird.phy <- ade4::newick2phylog(bird$tre)
 out <- iNextPD(bird$abun, bird.lab, bird.phy, q=0, 
                datatype="abundance", se=TRUE)
 g <- ggiNEXT(out, type=1, color.var = "site")
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 g
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-26-1.png)
-\#\#\# Change shapes, line types and colors
+<img src="README/README-unnamed-chunk-28-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+### Change shapes, line types and colors
 
 ``` r
 g1 <- g + scale_shape_manual(values=c(11, 12)) + 
@@ -603,11 +515,6 @@ In order to chage the size of reference sample point or rarefaction/extrapolatio
 ``` r
 # point is drawn on the 1st layer, default size is 5
 gb3 <- ggplot_build(g)
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 gb3$data[[1]]$size <- 10
 gt3 <- ggplot_gtable(gb3)
 
@@ -622,11 +529,6 @@ gt3 <- ggplot_gtable(gb3)
 ``` r
 # line is drawn on the 2nd layer, default size is 1.5
 gb4 <- ggplot_build(g)
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 gb4$data[[2]]$size <- 3
 gt4 <- ggplot_gtable(gb4)
 # grid.draw(gt4)
@@ -636,7 +538,7 @@ gt4 <- ggplot_gtable(gb4)
 grid.arrange(gt3, gt4, ncol=2)
 ```
 
-![](README/README-unnamed-chunk-30-1.png)
+<img src="README/README-unnamed-chunk-32-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 Customize theme
 ---------------
@@ -644,78 +546,52 @@ Customize theme
 A `ggplot` object can be themed by adding a theme. User could run `help(theme_grey)` to show the default themes in `ggplot2`. Further, some extra themes provided by [`ggthemes`](https://cran.r-project.org/package=ggthemes) package. Examples shown in the following:
 
 ``` r
-g5 <- g + theme_bw() + theme(legend.position = "bottom")
-g6 <- g + theme_classic() + theme(legend.position = "bottom")
+g5 <- g + theme_bw() + 
+  theme(legend.position = "bottom", legend.box = "vertical")
+g6 <- g + theme_classic() + 
+  theme(legend.position = "bottom", legend.box = "vertical")
 grid.arrange(g5, g6, ncol=2)
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-31-1.png)
+<img src="README/README-unnamed-chunk-33-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ``` r
 library(ggthemes)
 g7 <- g + theme_hc(bgcolor = "darkunica") +
-          scale_colour_hc("darkunica")
+  theme(legend.box = "vertical") +
+  scale_colour_hc("darkunica")
 
-g8 <- g + theme_economist() + scale_colour_economist()
-Warning: `panel.margin` is deprecated. Please use `panel.spacing` property
-instead
-Warning: `legend.margin` must be specified using `margin()`. For the old
-behavior use legend.spacing
+g8 <- g + theme_economist() + 
+  theme(legend.box = "vertical") +
+  scale_colour_economist()
 
 grid.arrange(g7, g8, ncol=2)
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-32-1.png)
-\#\#\# Black-White theme The following are custmized themes for black-white figure. To modifiy legend, see [Cookbook for R](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/) for more details.
+<img src="README/README-unnamed-chunk-34-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+
+### Black-White theme
+
+The following are custmized themes for black-white figure. To modifiy legend, see [Cookbook for R](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/) for more details.
 
 ``` r
 g9 <- g + theme_bw(base_size = 18) +
       scale_fill_grey(start = 0, end = .4) +
       scale_colour_grey(start = .2, end = .2) +
       theme(legend.position="bottom",
-            legend.title=element_blank())
+            legend.title=element_blank(),
+            legend.box = "vertical")
 
 g10 <- g + theme_tufte(base_size = 12) +       
     scale_fill_grey(start = 0, end = .4) +
     scale_colour_grey(start = .2, end = .2) +
     theme(legend.position="bottom",
-          legend.title=element_blank())
+          legend.title=element_blank(),
+          legend.box = "vertical")
 grid.arrange(g9, g10, ncol=2)
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
-
-Warning in `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels)
-else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
-![](README/README-unnamed-chunk-33-1.png)
+<img src="README/README-unnamed-chunk-35-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Draw R/E curves by yourself
 
@@ -724,20 +600,13 @@ In [`iNextPD`](https://cran.r-project.org/package=iNextPD), we provide a S3 `ggp
 ``` r
 df <- fortify(out, type=1)
 head(df)
-   datatype plottype       site       method order  x       y   y.lwr
-1 abundance        1 North.site interpolated     0  1  82.858  77.014
-2 abundance        1 North.site interpolated     0 12 428.313 391.179
-3 abundance        1 North.site interpolated     0 23 607.781 562.309
-4 abundance        1 North.site interpolated     0 34 726.034 677.017
-5 abundance        1 North.site interpolated     0 45 811.060 758.499
-6 abundance        1 North.site interpolated     0 56 876.145 819.443
-    y.upr
-1  88.701
-2 465.446
-3 653.253
-4 775.050
-5 863.621
-6 932.847
+   datatype plottype       site       method order  x       y   y.lwr   y.upr
+1 abundance        1 North.site interpolated     0  1  82.858  76.312  89.403
+2 abundance        1 North.site interpolated     0 12 428.313 388.507 468.118
+3 abundance        1 North.site interpolated     0 23 607.781 555.312 660.250
+4 abundance        1 North.site interpolated     0 34 726.034 665.616 786.451
+5 abundance        1 North.site interpolated     0 45 811.060 743.852 878.269
+6 abundance        1 North.site interpolated     0 56 876.145 802.674 949.617
 
 df.point <- df[which(df$method=="observed"),]
 df.line <- df[which(df$method!="observed"),]
@@ -753,10 +622,11 @@ ggplot(df, aes(x=x, y=y, colour=site)) +
   labs(x="Number of individuals", y="Phylogenetic diversity") +
   theme(legend.position = "bottom", 
         legend.title=element_blank(),
-        text=element_text(size=18)) 
+        text=element_text(size=18),
+        legend.box = "vertical") 
 ```
 
-![](README/README-unnamed-chunk-34-1.png)
+<img src="README/README-unnamed-chunk-36-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 License
 -------

@@ -6,12 +6,20 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, }
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "",
-  fig.path = "README/README-"
+  fig.path = "README/README-",
+  fig.align = 'center',
+  fig.retina=2, fig.width = 7, fig.height = 5,
+  warning = FALSE,
+  message = FALSE
 )
+options("width"=200)
+library(iNextPD)
+library(ggplot2)
+library(ade4)
 ```
 
 iNextPD (R package)
@@ -27,7 +35,7 @@ iNextPD (R package)
 <i>Institute of Statistics, National Tsing Hua University, Hsin-Chu, Taiwan 30043</i>  
 </h5>
 <br>
-`iNextPD` (**iN**terpolation and **ext**rapolation for **P**hylogenetic **D**iversity) is an R package provides the rarefaction and extrapolation framework to making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages (Hsieh and Chao, Systematic Biology, 2016). In this document, we provide a quick introduction demonstrating how to run `iNextPD`. Detailed information about `iNextPD` functions is provided in the iNextPD Manual, also available in [CRAN]( https://cran.r-project.org/package=iNextPD). See Chao et al. (2015) and Hsieh and Chao (2016) for methodologies. An online version of `iNEXT` (<https://chao.shinyapps.io/PhDOnline/>) is also available for users without an R background. A neutral theory of species diversity is included in Chao et al. (2014); and a brief description of methods and R package (`iNEXT`) are included in an application paper by Hsieh, Ma & Chao (2016). 
+`iNextPD` (**iN**terpolation and **ext**rapolation for **P**hylogenetic **D**iversity) is an R package provides the rarefaction and extrapolation framework to making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages (Hsieh and Chao, Systematic Biology, 2016). In this document, we provide a quick introduction demonstrating how to run `iNextPD`. Detailed information about `iNextPD` functions is provided in the iNextPD Manual, also available in [CRAN]( https://cran.r-project.org/package=iNextPD). See Chao et al. (2015) and Hsieh and Chao (2016) for methodologies. An online version of `PhDOnline` (<https://chao.shinyapps.io/PhDOnline/>) is also available for users without an R background. A neutral theory of species diversity is included in Chao et al. (2014); and a brief description of methods and R package (`iNEXT`) are included in an application paper by Hsieh, Ma & Chao (2016). 
 
 `iNextPD` is an extension for `iNEXT`, which extending trdional rarefaction and extrapoltion framework for species diversity to abundance-sensitive phylogenetic diversity. `iNextPD` focuses on three measures of Hill numbers of order q: Faith's PD (`q = 0`), a simple transformation of phylogenetic entropy (`q = 1`) and and a simple transformation of Rao's quadratic entropy (`q = 2`). For each diversity measure, `iNextPD` uses the observed sample of abundance or incidence data (called the “reference sample”) 
 to compute diversity estimates and the associated 95% confidence intervals for the following two types of rarefaction and extrapolation (R/E): 
@@ -57,6 +65,7 @@ install_github('JohnsonHsieh/iNextPD')
 ## import packages
 library(iNextPD)
 library(ggplot2)
+library(ade4)
 ```
 
 **Remark**: In order to install `devtools` package, you should update R to the latest version. Also, to get `install_github` to work, you should install the `httr` package. 
@@ -145,13 +154,25 @@ Three types of data are supported:
 
 ## RAREFACTION/EXTRAPOLATION VIA EXAMPLES
 
-Bird phylogeny and survey dataset is included in iNextPD package. This data set describes the phylogeny (`$tre`) of 41 birds as reported by Jetz et al. (2012). It also gives the two sites of species abundance (`$abun`) and incidence (`$inci`) data to these 41 species in November 2012 at Barrington Tops National Park, Australia. For these data, the following commands display basic data information and run the `iNextPD()` function for `q = 0`.
+Bird phylogeny and survey dataset is included in iNextPD package. This data set describes the phylogeny (`$tre`) of 41 birds as reported by Jetz et al. (2012). It also gives the two sites of species abundance (`$abun`) and incidence (`$inci`) data to these 41 species in November 2012 at Barrington Tops National Park, Australia. For this data, the following commands display basic data visualization:
 
-```{r eval=FALSE}
+```{r include=FALSE}
+library(ade4)
+library(iNextPD)
+```
+```{r}
 data(bird)
 str(bird)
 bird.lab <- rownames(bird$abun)
 bird.phy <- ade4::newick2phylog(bird$tre)
+# plot(bird.phy)
+table.phylog(bird$abun, bird.phy, csize=4, f.phylog=0.7)
+```
+
+
+For this data, the following commands display basic data information and run the `iNextPD()` function for `q = 0`.
+
+```{r eval=FALSE}
 iNextPD(x=bird$abun, labels=bird.lab, phy=bird.phy, 
         q=0, datatype="abundance")
 ```
@@ -406,6 +427,7 @@ The data visualization package [`ggplot2`](https://cran.r-project.org/package=gg
 see [quick reference](http://sape.inf.usi.ch/quick-reference/ggplot2/scale) for style setting.
 
 
+
 ### Example: `bird` data
 To show how to custmized `ggiNEXT` output, we use abundance-based data `spider` as an example.
 
@@ -469,8 +491,10 @@ grid.arrange(gt3, gt4, ncol=2)
 ## Customize theme
 A `ggplot` object can be themed by adding a theme. User could run `help(theme_grey)` to show the default themes in `ggplot2`. Further, some extra themes provided by  [`ggthemes`](https://cran.r-project.org/package=ggthemes) package. Examples shown in the following:
 ```{r}
-g5 <- g + theme_bw() + theme(legend.position = "bottom")
-g6 <- g + theme_classic() + theme(legend.position = "bottom")
+g5 <- g + theme_bw() + 
+  theme(legend.position = "bottom", legend.box = "vertical")
+g6 <- g + theme_classic() + 
+  theme(legend.position = "bottom", legend.box = "vertical")
 grid.arrange(g5, g6, ncol=2)
 ```
 
@@ -478,9 +502,12 @@ grid.arrange(g5, g6, ncol=2)
 ```{r}
 library(ggthemes)
 g7 <- g + theme_hc(bgcolor = "darkunica") +
-          scale_colour_hc("darkunica")
+  theme(legend.box = "vertical") +
+  scale_colour_hc("darkunica")
 
-g8 <- g + theme_economist() + scale_colour_economist()
+g8 <- g + theme_economist() + 
+  theme(legend.box = "vertical") +
+  scale_colour_economist()
 
 grid.arrange(g7, g8, ncol=2)
 ```
@@ -494,13 +521,15 @@ g9 <- g + theme_bw(base_size = 18) +
       scale_fill_grey(start = 0, end = .4) +
       scale_colour_grey(start = .2, end = .2) +
       theme(legend.position="bottom",
-            legend.title=element_blank())
+            legend.title=element_blank(),
+            legend.box = "vertical")
 
 g10 <- g + theme_tufte(base_size = 12) +       
     scale_fill_grey(start = 0, end = .4) +
     scale_colour_grey(start = .2, end = .2) +
     theme(legend.position="bottom",
-          legend.title=element_blank())
+          legend.title=element_blank(),
+          legend.box = "vertical")
 grid.arrange(g9, g10, ncol=2)
 ```
 
@@ -525,8 +554,10 @@ ggplot(df, aes(x=x, y=y, colour=site)) +
   labs(x="Number of individuals", y="Phylogenetic diversity") +
   theme(legend.position = "bottom", 
         legend.title=element_blank(),
-        text=element_text(size=18)) 
+        text=element_text(size=18),
+        legend.box = "vertical") 
 ```
+
 
 
 ## License
