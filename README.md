@@ -267,19 +267,19 @@ For example, the following command returns the species diversity with a specifie
 estimatePD(bird$abun, bird.lab, bird.phy, "abundance", 
            base="coverage", level=0.975, conf=0.95)
          site        m       method order    SC       qPD qPD.95.LCL
-1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1128.1958
-3  North.site 227.0711 extrapolated     1 0.975  439.4657   389.0800
-5  North.site 227.0711 extrapolated     2 0.975  212.5806   181.2102
-8  South.site 247.8890 interpolated     0 0.975 1367.1348  1284.1023
-10 South.site 247.8890 interpolated     1 0.975  451.9783   404.1854
-12 South.site 247.8890 interpolated     2 0.975  205.6565   174.8883
+1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1102.0086
+3  North.site 227.0711 extrapolated     1 0.975  439.4657   397.2367
+5  North.site 227.0711 extrapolated     2 0.975  212.5806   173.5876
+8  South.site 247.8890 interpolated     0 0.975 1367.1348  1289.6605
+10 South.site 247.8890 interpolated     1 0.975  451.9783   416.2718
+12 South.site 247.8890 interpolated     2 0.975  205.6565   175.3628
    qPD.95.UCL
-1   1368.0279
-3    489.8515
-5    243.9510
-8   1450.1674
-10   499.7713
-12   236.4247
+1   1394.2150
+3    481.6948
+5    251.5736
+8   1444.6092
+10   487.6849
+12   235.9502
 ```
 
 GRAPHIC DISPLAYS: FUNCTION `ggiNEXT()`
@@ -332,6 +332,7 @@ ggiNEXT(out, type=1, facet.var="site")
     else paste0(labels, : duplicated levels in factors are deprecated
 
 ![](README/README-unnamed-chunk-13-1.png)
+
 The argument `facet.var="order"` and `color.var="site"` creates a separate plot for each diversity order site, and within each plot, different colors are used for two sites.
 
 ``` r
@@ -393,6 +394,7 @@ else paste0(labels, : duplicated levels in factors are deprecated
 ```
 
 ![](README/README-unnamed-chunk-17-1.png)
+
 The argument `color.var = ("none", "order", "site" or "both")` is used to display curves in different colors for values of the specified variable. For example, the following code using the argument `color.var="site"` displays the sampling curves in different colors for the five sites. Note that `theme_bw()` is a ggplot2 function to modify display setting from grey background to black‐and‐white. The following commands return three types R/E sampling curves for ant data.
 
 ### Example for incidence data
@@ -723,19 +725,19 @@ In [`iNextPD`](https://cran.r-project.org/package=iNextPD), we provide a S3 `ggp
 df <- fortify(out, type=1)
 head(df)
    datatype plottype       site       method order  x       y   y.lwr
-1 abundance        1 North.site interpolated     0  1  82.858  76.347
-2 abundance        1 North.site interpolated     0 12 428.313 390.596
-3 abundance        1 North.site interpolated     0 23 607.781 562.461
-4 abundance        1 North.site interpolated     0 34 726.034 675.953
-5 abundance        1 North.site interpolated     0 45 811.060 755.381
-6 abundance        1 North.site interpolated     0 56 876.145 814.457
+1 abundance        1 North.site interpolated     0  1  82.858  77.014
+2 abundance        1 North.site interpolated     0 12 428.313 391.179
+3 abundance        1 North.site interpolated     0 23 607.781 562.309
+4 abundance        1 North.site interpolated     0 34 726.034 677.017
+5 abundance        1 North.site interpolated     0 45 811.060 758.499
+6 abundance        1 North.site interpolated     0 56 876.145 819.443
     y.upr
-1  89.368
-2 466.030
-3 653.102
-4 776.114
-5 866.739
-6 937.833
+1  88.701
+2 465.446
+3 653.253
+4 775.050
+5 863.621
+6 932.847
 
 df.point <- df[which(df$method=="observed"),]
 df.line <- df[which(df$method!="observed"),]

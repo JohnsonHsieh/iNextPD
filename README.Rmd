@@ -70,6 +70,7 @@ We first describe the main function `iNextPD()` with default arguments:
 iNextPD(x, labels, phy, q=0, datatype="abundance", size=NULL, endpoint=NULL, knots=40, se=FALSE, conf=0.95, nboot=50)
 ```
 
+
 The arguments of this function are briefly described below, and will be explained in more details by illustrative examples in later text. This main function computes diversity estimates of order q = 0, 1, 2, the sample coverage estimates and related statistics for K (if `knots=K`) evenly‐spaced knots (sample sizes) between size 1 and the `endpoint`, where the endpoint is described below. Each knot represents a particular sample size for which diversity estimates will be calculated. By default, endpoint = double the reference sample size (total sample size for abundance data; total sampling units for incidence data). For example, if `endpoint = 10`, `knot = 4`, diversity estimates will be computed for a sequence of samples with sizes (1, 4, 7, 10).  
 <table style="width:100%;">
 <colgroup>
@@ -279,6 +280,7 @@ ggiNEXT(out, type=1, facet.var="order", grey=TRUE)
 ## End(Not run)
 ```
 
+
 The argument `facet.var="site"` in `ggiNEXT` function creates a separate plot for each site as shown below: 
 ```{r eval=FALSE}
 # Sample‐size‐based R/E curves, separating by "site""
@@ -290,6 +292,7 @@ out <- iNextPD(bird$abun, bird.lab, bird.phy,
                q=c(0, 1, 2), datatype="abundance", endpoint=400)
 ggiNEXT(out, type=1, facet.var="site")
 ```
+
 
 The argument `facet.var="order"` and `color.var="site"` creates a separate plot for each diversity order site, and within each plot, different colors are used for two sites. 
 
@@ -316,6 +319,7 @@ ggiNEXT(out, type=3, facet.var="site")
 ```{r}
 ggiNEXT(out, type=3, facet.var="order", color.var="site")
 ```
+
 
 The argument `color.var = ("none", "order", "site" or "both")` is used to display curves in different colors for values of the specified variable. For example, the following code using the argument `color.var="site"` displays the sampling curves in different colors for the five sites. Note that `theme_bw()` is a ggplot2
 function to modify display setting from grey background to black‐and‐white. The following commands return three types R/E sampling curves for ant data. 
@@ -353,7 +357,8 @@ ggiNEXT(out.inc, type=3, color.var ="site") +
 
 The `ggiNEXT()` function is a wrapper around `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so can be manipulated using the `ggplot2` tools. The following are some useful examples for customizing graphs. 
 
-### remove legend
+
+### Remove legend
 ```{r}
 out2 <- iNextPD(bird$abun, bird.lab, bird.phy,
                q=c(0, 1, 2), datatype="abundance", 
@@ -362,30 +367,34 @@ ggiNEXT(out2, type=3, facet.var="site") +
   theme(legend.position="none")
 ```
 
-### change to theme and legend.position
+
+### Change to theme and legend.position
 ```{r}
 ggiNEXT(out2, type=1, facet.var="site") + 
   theme_bw(base_size = 18) +
   theme(legend.position="right")
 ```
 
-### display black‐white theme
+
+### Display black‐white theme
 ```{r}
 ggiNEXT(out2, type=1, facet.var="order", grey=TRUE)
 ```
 
-### free the scale of axis
+
+### Free the scale of axis
 ```{r}
 ggiNEXT(out2, type=1, facet.var="order") + 
   facet_wrap(~order, scales="free")
 ```
 
 
-### change the shape of reference sample size
+### Change the shape of reference sample size
 ```{r}
 ggiNEXT(out2, type=1, facet.var="site") +
   scale_shape_manual(values=c(19,19,19))
 ```
+
 
 ## General customization
 The data visualization package [`ggplot2`](https://cran.r-project.org/package=ggplot2) provides `scale_` function to customize  data which is mapped into an aesthetic property of a `geom_`. The following functions would help user to customize `ggiNEXT` output.
@@ -395,6 +404,7 @@ The data visualization package [`ggplot2`](https://cran.r-project.org/package=gg
 - change line color: `scale_colour_manual`    
 - change band color: `scale_fill_manual`    
 see [quick reference](http://sape.inf.usi.ch/quick-reference/ggplot2/scale) for style setting.
+
 
 ### Example: `bird` data
 To show how to custmized `ggiNEXT` output, we use abundance-based data `spider` as an example.
@@ -412,6 +422,7 @@ g <- ggiNEXT(out, type=1, color.var = "site")
 g
 ```
 
+
 ### Change shapes, line types and colors
 ```{r eval=FALSE}
 g1 <- g + scale_shape_manual(values=c(11, 12)) + 
@@ -423,6 +434,7 @@ g2 <- g + scale_colour_manual(values=c("red", "blue")) +
 # library(gridExtra)
 grid.arrange(g1, g2, ncol=2)
 ```
+
 
 ## Customize point/line size by hacking
 In order to chage the size of reference sample point or rarefaction/extrapolation curve, user need modify `ggplot` object.
@@ -454,7 +466,6 @@ grid.arrange(gt3, gt4, ncol=2)
 ```
 
 
-
 ## Customize theme
 A `ggplot` object can be themed by adding a theme. User could run `help(theme_grey)` to show the default themes in `ggplot2`. Further, some extra themes provided by  [`ggthemes`](https://cran.r-project.org/package=ggthemes) package. Examples shown in the following:
 ```{r}
@@ -473,6 +484,7 @@ g8 <- g + theme_economist() + scale_colour_economist()
 
 grid.arrange(g7, g8, ncol=2)
 ```
+
 
 ### Black-White theme
 The following are custmized themes for black-white figure. To modifiy legend, see [Cookbook for R](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/) for more details.
@@ -524,9 +536,9 @@ The iNextPD package is licensed under the GPLv3. To help refine `iNextPD`, your 
 
 If you publish your work based on results from `iNextPD` (R package), please make reference to Hsieh and Chao (2016) and Chao et al. (2015) given in the following list.
 
+
 ## References
 - Chao, A., Gotelli, N.J., Hsieh, T.C., Sander, E.L., Ma, K.H., Colwell, R.K. & Ellison, A.M. (2014) Rarefaction and extrapolation with Hill numbers: a framework for sampling and estimation in species diversity studies. Ecological Monographs, 84, 45–67. 
 - Chao A., Chiu C.H., Hsieh T.C., Davis T., Nipperess D.A. & Faith D.P. (2015) Rarefaction and extrapolation of phylogenetic diversity.Method Ecol. Evol. 6:380–388.
 - Hsieh, T.C., Ma, K.H. and Chao, A. (2016) iNEXT: an R package for rarefaction and extrapolation of species diversity (Hill numbers). Methods Ecol Evol.
 - Jetz, W., Thomas, G.H., Joy, J.B., Hartmann, K. & Mooers A.O. (2012) The global diversity of birds in space and time. Nature, 491, 444-448.
-
