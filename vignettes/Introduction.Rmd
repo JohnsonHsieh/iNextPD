@@ -394,7 +394,6 @@ To show how to custmized `ggiNEXT` output, we use abundance-based data `spider` 
 library(iNextPD)
 library(ggplot2)
 library(gridExtra)
-library(grid)
 data(bird)
 bird.lab <- rownames(bird$abun)
 bird.phy <- ade4::newick2phylog(bird$tre)
@@ -428,6 +427,7 @@ gb3$data[[1]]$size <- 10
 gt3 <- ggplot_gtable(gb3)
 
 # use grid.draw to draw the graphical object
+# library(grid)
 # grid.draw(gt3)
 ```
 
@@ -439,9 +439,11 @@ gb4 <- ggplot_build(g)
 gb4$data[[2]]$size <- 3
 gt4 <- ggplot_gtable(gb4)
 # grid.draw(gt4)
-
+```
+```{r}
 grid.arrange(gt3, gt4, ncol=2)
 ```
+
 
 
 ## Customize theme
@@ -452,12 +454,14 @@ g6 <- g + theme_classic() + theme(legend.position = "bottom")
 grid.arrange(g5, g6, ncol=2)
 ```
 
+
 ```{r}
 library(ggthemes)
 g7 <- g + theme_hc(bgcolor = "darkunica") +
           scale_colour_hc("darkunica")
 
 g8 <- g + theme_economist() + scale_colour_economist()
+
 grid.arrange(g7, g8, ncol=2)
 ```
 
@@ -478,6 +482,7 @@ g10 <- g + theme_tufte(base_size = 12) +
           legend.title=element_blank())
 grid.arrange(g9, g10, ncol=2)
 ```
+
 
 ### Draw R/E curves by yourself
 In [`iNextPD`]( https://cran.r-project.org/package=iNextPD), we provide a S3 `ggplot2::fortify` method for class `iNextPD`. The function `fortify` offers a single plotting interface for rarefaction/extrapolation curves. Set  argument `type = 1, 2, 3` to plot the corresponding rarefaction/extrapolation curves.
