@@ -15,7 +15,11 @@ Introduction to iNextPD (R package)
 <h5>
 <b>Hsieh, T. C. and Anne Chao</b> <br><br> <i>Institute of Statistics, National Tsing Hua University, Hsin-Chu, Taiwan 30043</i>
 </h5>
+<<<<<<< HEAD
 <br> `iNextPD` (**iN**terpolation and **ext**rapolation for **P**hylogenetic **D**iversity) is an R package provides the rarefaction and extrapolation framework to making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages (Hsieh and Chao, Systematic Biology, 2016). In this document, we provide a quick introduction demonstrating how to run `iNextPD`. Detailed information about `iNextPD` functions is provided in the iNextPD Manual, also available in [CRAN](https://cran.r-project.org/package=iNextPD). See Chao et al. (2015) and Hsieh and Chao (2016) for methodologies. An online version of `PhDOnline` (<https://chao.shinyapps.io/PhDOnline/>) is also available for users without an R background. A neutral theory of species diversity is included in Chao et al. (2014); and a brief description of methods and R package (`iNEXT`) are included in an application paper by Hsieh, Ma & Chao (2016).
+=======
+<br> `iNextPD` (**iN**terpolation and **ext**rapolation for **P**hylogenetic **D**iversity) is an R package provides the rarefaction and extrapolation framework to making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages (Hsieh and Chao, Systematic Biology, 2016). In this document, we provide a quick introduction demonstrating how to run `iNextPD`. Detailed information about `iNextPD` functions is provided in the iNextPD Manual, also available in [CRAN](https://cran.r-project.org/package=iNextPD). See Chao et al. (2015) and Hsieh and Chao (2016) for methodologies. An online version of `iNEXT` (<https://chao.shinyapps.io/PhDOnline/>) is also available for users without an R background. A neutral theory of species diversity is included in Chao et al. (2014); and a brief description of methods and R package (`iNEXT`) are included in an application paper by Hsieh, Ma & Chao (2016).
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 `iNextPD` is an extension for `iNEXT`, which extending trdional rarefaction and extrapoltion framework for species diversity to abundance-sensitive phylogenetic diversity. `iNextPD` focuses on three measures of Hill numbers of order q: Faith's PD (`q = 0`), a simple transformation of phylogenetic entropy (`q = 1`) and and a simple transformation of Rao's quadratic entropy (`q = 2`). For each diversity measure, `iNextPD` uses the observed sample of abundance or incidence data (called the “reference sample”) to compute diversity estimates and the associated 95% confidence intervals for the following two types of rarefaction and extrapolation (R/E):
 
@@ -24,8 +28,13 @@ Introduction to iNextPD (R package)
 
 `iNextPD` also plots the above two types of sampling curves and a sample completeness curve. The sample completeness curve provides a bridge between these two types of curves (`type=2`).
 
+<<<<<<< HEAD
 SOFTWARE NEEDED TO RUN INEXTPD IN R
 -----------------------------------
+=======
+SOFTWARE NEEDED TO RUN INEXT IN R
+---------------------------------
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 -   Required: [R](https://cran.r-project.org/)
 -   Suggested: [RStudio IDE](https://www.rstudio.com/products/RStudio/#Desktop)
@@ -47,15 +56,25 @@ install_github('JohnsonHsieh/iNextPD')
 ## import packages
 library(iNextPD)
 library(ggplot2)
+<<<<<<< HEAD
 library(ade4)
+=======
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 ```
 
 **Remark**: In order to install `devtools` package, you should update R to the latest version. Also, to get `install_github` to work, you should install the `httr` package.
 
+<<<<<<< HEAD
 MAIN FUNCTION: `iNextPD()`
 --------------------------
 
 We first describe the main function `iNextPD()` with default arguments:
+=======
+MAIN FUNCTION: iNEXT()
+----------------------
+
+We first describe the main function `iNEXT()` with default arguments:
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 iNextPD(x, labels, phy, q=0, datatype="abundance", size=NULL, endpoint=NULL, knots=40, se=FALSE, conf=0.95, nboot=50)
@@ -182,11 +201,16 @@ Three types of data are supported:
 RAREFACTION/EXTRAPOLATION VIA EXAMPLES
 --------------------------------------
 
+<<<<<<< HEAD
 Bird phylogeny and survey dataset is included in iNextPD package. This data set describes the phylogeny (`$tre`) of 41 birds as reported by Jetz et al. (2012). It also gives the two sites of species abundance (`$abun`) and incidence (`$inci`) data to these 41 species in November 2012 at Barrington Tops National Park, Australia. For this data, the following commands display basic data visualization:
+=======
+Bird phylogeny and survey dataset is included in iNextPD package. This data set describes the phylogeny (`$tre`) of 41 birds as reported by Jetz et al. (2012). It also gives the two sites of species abundance (`$abun`) and incidence (`$inci`) data to these 41 species in November 2012 at Barrington Tops National Park, Australia. For these data, the following commands display basic data information and run the `iNextPD()` function for `q = 0`.
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 data(bird)
 str(bird)
+<<<<<<< HEAD
 List of 3
  $ tre : chr "(((((Alisterus_scapularis:31.96595541,Platycercus_elegans:31.96595545):13.04819101,(Cacatua_galerita:32.14669035,Calyptorhynchu"| __truncated__
  $ abun:'data.frame':   41 obs. of  2 variables:
@@ -212,6 +236,10 @@ table.phylog(bird$abun, bird.phy, csize=4, f.phylog=0.7)
 For this data, the following commands display basic data information and run the `iNextPD()` function for `q = 0`.
 
 ``` r
+=======
+bird.lab <- rownames(bird$abun)
+bird.phy <- ade4::newick2phylog(bird$tre)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 iNextPD(x=bird$abun, labels=bird.lab, phy=bird.phy, 
         q=0, datatype="abundance")
 ```
@@ -290,6 +318,7 @@ For example, the following command returns the species diversity with a specifie
 ``` r
 estimatePD(bird$abun, bird.lab, bird.phy, "abundance", 
            base="coverage", level=0.975, conf=0.95)
+<<<<<<< HEAD
          site        m       method order    SC       qPD qPD.95.LCL qPD.95.UCL
 1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1131.5577  1364.6660
 3  North.site 227.0711 extrapolated     1 0.975  439.4657   389.6999   489.2315
@@ -297,6 +326,22 @@ estimatePD(bird$abun, bird.lab, bird.phy, "abundance",
 8  South.site 247.8890 interpolated     0 0.975 1367.1348  1267.0899  1467.1798
 10 South.site 247.8890 interpolated     1 0.975  451.9783   416.5065   487.4501
 12 South.site 247.8890 interpolated     2 0.975  205.6565   178.5769   232.7361
+=======
+         site        m       method order    SC       qPD qPD.95.LCL
+1  North.site 227.0711 extrapolated     0 0.975 1248.1118  1112.6050
+3  North.site 227.0711 extrapolated     1 0.975  439.4657   391.4457
+5  North.site 227.0711 extrapolated     2 0.975  212.5806   176.4501
+8  South.site 247.8890 interpolated     0 0.975 1367.1348  1276.0057
+10 South.site 247.8890 interpolated     1 0.975  451.9783   413.6405
+12 South.site 247.8890 interpolated     2 0.975  205.6565   178.9150
+   qPD.95.UCL
+1   1383.6187
+3    487.4857
+5    248.7111
+8   1458.2640
+10   490.3162
+12   232.3980
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 ```
 
 GRAPHIC DISPLAYS: FUNCTION `ggiNEXT()`
@@ -339,15 +384,23 @@ The argument `facet.var="site"` in `ggiNEXT` function creates a separate plot fo
 ggiNEXT(out, type=1, facet.var="site")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-15-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
+=======
+![](README/README-unnamed-chunk-13-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 The argument `facet.var="order"` and `color.var="site"` creates a separate plot for each diversity order site, and within each plot, different colors are used for two sites.
 
 ``` r
 ggiNEXT(out, type=1, facet.var="order", color.var="site")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-16-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+![](README/README-unnamed-chunk-14-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 The following commands return the sample completeness curve in which different colors are used for the two sites:
 
@@ -355,7 +408,11 @@ The following commands return the sample completeness curve in which different c
 ggiNEXT(out, type=2, facet.var="none", color.var="site")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-17-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+![](README/README-unnamed-chunk-15-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 The following commands return the coverage‐based R/E sampling curves in which different colors are used for the two sites (`facet.var="site"`) and for three orders (`facet.var="order"`)
 
@@ -363,14 +420,22 @@ The following commands return the coverage‐based R/E sampling curves in which 
 ggiNEXT(out, type=3, facet.var="site")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-18-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+![](README/README-unnamed-chunk-16-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 ggiNEXT(out, type=3, facet.var="order", color.var="site")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-19-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
+=======
+![](README/README-unnamed-chunk-17-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 The argument `color.var = ("none", "order", "site" or "both")` is used to display curves in different colors for values of the specified variable. For example, the following code using the argument `color.var="site"` displays the sampling curves in different colors for the five sites. Note that `theme_bw()` is a ggplot2 function to modify display setting from grey background to black‐and‐white. The following commands return three types R/E sampling curves for ant data.
 
 ### Example for incidence data
@@ -386,7 +451,11 @@ ggiNEXT(out.inc, type=1, color.var="site") +
   theme(legend.position="none")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-20-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+![](README/README-unnamed-chunk-18-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 # Sample completeness curves
@@ -394,9 +463,16 @@ ggiNEXT(out.inc, type=2, color.var="site") +
   xlim(c(5,25)) + ylim(c(0.7,1)) +
   theme_bw(base_size = 18) + 
   theme(legend.position="none")
+<<<<<<< HEAD
 ```
 
 <img src="README/README-unnamed-chunk-21-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+Warning: Removed 8 rows containing missing values (geom_path).
+```
+
+![](README/README-unnamed-chunk-19-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 # Coverage‐based R/E curves
@@ -405,6 +481,7 @@ ggiNEXT(out.inc, type=3, color.var ="site") +
   theme_bw(base_size = 18) +
   theme(legend.position="bottom",
         legend.title=element_blank())
+<<<<<<< HEAD
 ```
 
 <img src="README/README-unnamed-chunk-22-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
@@ -414,6 +491,17 @@ ggiNEXT(out.inc, type=3, color.var ="site") +
 The `ggiNEXT()` function is a wrapper around `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so can be manipulated using the `ggplot2` tools. The following are some useful examples for customizing graphs.
 
 ### Remove legend
+=======
+Warning: Removed 5 rows containing missing values (geom_path).
+```
+
+![](README/README-unnamed-chunk-20-1.png)
+\#\#\# Hacking `ggiNEXT()`
+
+The `ggiNEXT()` function is a wrapper around `ggplot2` package to create a R/E curve using a single line of code. The resulting object is of class `"ggplot"`, so can be manipulated using the `ggplot2` tools. The following are some useful examples for customizing graphs.
+
+### remove legend
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 out2 <- iNextPD(bird$abun, bird.lab, bird.phy,
@@ -423,9 +511,14 @@ ggiNEXT(out2, type=3, facet.var="site") +
   theme(legend.position="none")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-23-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Change to theme and legend.position
+=======
+![](README/README-unnamed-chunk-21-1.png)
+\#\#\# change to theme and legend.position
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="site") + 
@@ -433,38 +526,59 @@ ggiNEXT(out2, type=1, facet.var="site") +
   theme(legend.position="right")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-24-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Display black‐white theme
+=======
+![](README/README-unnamed-chunk-22-1.png)
+\#\#\# display black‐white theme
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="order", grey=TRUE)
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-25-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Free the scale of axis
+=======
+![](README/README-unnamed-chunk-23-1.png)
+\#\#\# free the scale of axis
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="order") + 
   facet_wrap(~order, scales="free")
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-26-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Change the shape of reference sample size
+=======
+![](README/README-unnamed-chunk-24-1.png)
+
+### change the shape of reference sample size
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 ggiNEXT(out2, type=1, facet.var="site") +
   scale_shape_manual(values=c(19,19,19))
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-27-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 General customization
 ---------------------
 
 The data visualization package [`ggplot2`](https://cran.r-project.org/package=ggplot2) provides `scale_` function to customize data which is mapped into an aesthetic property of a `geom_`. The following functions would help user to customize `ggiNEXT` output.
+=======
+![](README/README-unnamed-chunk-25-1.png)
+\#\# General customization The data visualization package [`ggplot2`](https://cran.r-project.org/package=ggplot2) provides `scale_` function to customize data which is mapped into an aesthetic property of a `geom_`. The following functions would help user to customize `ggiNEXT` output.
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 -   change point shape: `scale_shape_manual`
 -   change line type : `scale_linetype_manual`
@@ -489,9 +603,14 @@ g <- ggiNEXT(out, type=1, color.var = "site")
 g
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-28-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Change shapes, line types and colors
+=======
+![](README/README-unnamed-chunk-26-1.png)
+\#\#\# Change shapes, line types and colors
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 g1 <- g + scale_shape_manual(values=c(11, 12)) + 
@@ -538,7 +657,11 @@ gt4 <- ggplot_gtable(gb4)
 grid.arrange(gt3, gt4, ncol=2)
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-32-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+![](README/README-unnamed-chunk-30-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 Customize theme
 ---------------
@@ -546,6 +669,7 @@ Customize theme
 A `ggplot` object can be themed by adding a theme. User could run `help(theme_grey)` to show the default themes in `ggplot2`. Further, some extra themes provided by [`ggthemes`](https://cran.r-project.org/package=ggthemes) package. Examples shown in the following:
 
 ``` r
+<<<<<<< HEAD
 g5 <- g + theme_bw() + 
   theme(legend.position = "bottom", legend.box = "vertical")
 g6 <- g + theme_classic() + 
@@ -554,44 +678,79 @@ grid.arrange(g5, g6, ncol=2)
 ```
 
 <img src="README/README-unnamed-chunk-33-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+g5 <- g + theme_bw() + theme(legend.position = "bottom")
+g6 <- g + theme_classic() + theme(legend.position = "bottom")
+grid.arrange(g5, g6, ncol=2)
+```
+
+![](README/README-unnamed-chunk-31-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 library(ggthemes)
 g7 <- g + theme_hc(bgcolor = "darkunica") +
+<<<<<<< HEAD
   theme(legend.box = "vertical") +
   scale_colour_hc("darkunica")
 
 g8 <- g + theme_economist() + 
   theme(legend.box = "vertical") +
   scale_colour_economist()
+=======
+          scale_colour_hc("darkunica")
+
+g8 <- g + theme_economist() + scale_colour_economist()
+Warning: `panel.margin` is deprecated. Please use `panel.spacing` property
+instead
+Warning: `legend.margin` must be specified using `margin()`. For the old
+behavior use legend.spacing
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 grid.arrange(g7, g8, ncol=2)
 ```
 
+<<<<<<< HEAD
 <img src="README/README-unnamed-chunk-34-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
 
 ### Black-White theme
 
 The following are custmized themes for black-white figure. To modifiy legend, see [Cookbook for R](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/) for more details.
+=======
+![](README/README-unnamed-chunk-32-1.png)
+\#\#\# Black-White theme The following are custmized themes for black-white figure. To modifiy legend, see [Cookbook for R](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/) for more details.
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ``` r
 g9 <- g + theme_bw(base_size = 18) +
       scale_fill_grey(start = 0, end = .4) +
       scale_colour_grey(start = .2, end = .2) +
       theme(legend.position="bottom",
+<<<<<<< HEAD
             legend.title=element_blank(),
             legend.box = "vertical")
+=======
+            legend.title=element_blank())
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 g10 <- g + theme_tufte(base_size = 12) +       
     scale_fill_grey(start = 0, end = .4) +
     scale_colour_grey(start = .2, end = .2) +
     theme(legend.position="bottom",
+<<<<<<< HEAD
           legend.title=element_blank(),
           legend.box = "vertical")
 grid.arrange(g9, g10, ncol=2)
 ```
 
 <img src="README/README-unnamed-chunk-35-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+          legend.title=element_blank())
+grid.arrange(g9, g10, ncol=2)
+```
+
+![](README/README-unnamed-chunk-33-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 ### Draw R/E curves by yourself
 
@@ -600,6 +759,7 @@ In [`iNextPD`](https://cran.r-project.org/package=iNextPD), we provide a S3 `ggp
 ``` r
 df <- fortify(out, type=1)
 head(df)
+<<<<<<< HEAD
    datatype plottype       site       method order  x       y   y.lwr   y.upr
 1 abundance        1 North.site interpolated     0  1  82.858  76.312  89.403
 2 abundance        1 North.site interpolated     0 12 428.313 388.507 468.118
@@ -607,6 +767,22 @@ head(df)
 4 abundance        1 North.site interpolated     0 34 726.034 665.616 786.451
 5 abundance        1 North.site interpolated     0 45 811.060 743.852 878.269
 6 abundance        1 North.site interpolated     0 56 876.145 802.674 949.617
+=======
+   datatype plottype       site       method order  x       y   y.lwr
+1 abundance        1 North.site interpolated     0  1  82.858  77.041
+2 abundance        1 North.site interpolated     0 12 428.313 395.555
+3 abundance        1 North.site interpolated     0 23 607.781 567.181
+4 abundance        1 North.site interpolated     0 34 726.034 678.792
+5 abundance        1 North.site interpolated     0 45 811.060 756.704
+6 abundance        1 North.site interpolated     0 56 876.145 815.043
+    y.upr
+1  88.674
+2 461.070
+3 648.382
+4 773.275
+5 865.416
+6 937.248
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 df.point <- df[which(df$method=="observed"),]
 df.line <- df[which(df$method!="observed"),]
@@ -622,22 +798,32 @@ ggplot(df, aes(x=x, y=y, colour=site)) +
   labs(x="Number of individuals", y="Phylogenetic diversity") +
   theme(legend.position = "bottom", 
         legend.title=element_blank(),
+<<<<<<< HEAD
         text=element_text(size=18),
         legend.box = "vertical") 
 ```
 
 <img src="README/README-unnamed-chunk-36-1.png" title="" alt="" width="672" style="display: block; margin: auto;" />
+=======
+        text=element_text(size=18)) 
+```
+
+![](README/README-unnamed-chunk-34-1.png)
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 
 License
 -------
 
 The iNextPD package is licensed under the GPLv3. To help refine `iNextPD`, your comments or feedbacks would be welcome (please send them to T. C. Hsieh or report an issue on iNextPD github [reop](https://github.com/JohnsonHsieh/iNextPD)).
 
+<<<<<<< HEAD
 How to cite
 -----------
 
 If you publish your work based on results from `iNextPD` (R package), please make reference to Hsieh and Chao (2016) and Chao et al. (2015) given in the following list.
 
+=======
+>>>>>>> 8580f31ff5b3faaa403242969586706a8d00d2bb
 References
 ----------
 
