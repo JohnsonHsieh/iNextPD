@@ -41,6 +41,9 @@ data(bird)
 bird.abu <- bird$abun
 bird.lab <- rownames(bird$abun)
 bird.phy <- ade4::newick2phylog(bird$tre)
+estimatePD(bird.abu, bird.lab, bird.phy, "abundance", base="size", level=NULL, conf=NULL)
+\dontrun{
 estimatePD(bird.abu, bird.lab, bird.phy, "abundance", base="size", level=NULL)
+}
 }
 
