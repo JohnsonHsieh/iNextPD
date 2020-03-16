@@ -36,7 +36,7 @@ iNextPD.Ind <- function(x, labels, phy, q, size=NULL, endpoint=2*sum(x), knots=4
   U <- tmp$branch_abun
   L <- tmp$branch_length
   names(x) <- labels
-  x <- x[names(phy$leaves)]
+  # x <- x[names(phy$leaves)]
   phd.hat <- PhD.m(n, x, U, L, q, m)
   C.hat <- Coverage_(x, "abundance", m)
   
