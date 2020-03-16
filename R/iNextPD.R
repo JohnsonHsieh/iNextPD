@@ -111,7 +111,7 @@ iNextPD.Sam <- function(x, labels, phy, q, size=NULL, endpoint=2*ncol(x), knots=
   L <- tmp$branch_length
   xx <- rowSums(x)
   names(xx) <- labels
-  xx <- xx[names(phy$leaves)]
+  # xx <- xx[names(phy$leaves)]
   phd.hat <- PhD.m(nT, xx, U, L, q, t)
   C.hat <- Coverage_(Spec, "incidence",t)
   
