@@ -1,7 +1,7 @@
 Package: iNextPD
 Type: Package
 Title: Interpolation and Extrapolation for Phylogenetic Diversity
-Version: 0.3.1
+Version: 0.3.2
 Date: 2016-11-10
 Authors@R: c(person("T. C.", "Hsieh", role = c("aut", "cre", "cph"), email =
     "euler96@gmail.com"),  person("Chun-Huo", "Chiu", role = "ths", email =
