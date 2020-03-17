@@ -7,3 +7,7 @@ iNextPD 0.3.1
 ----------------------------------------------------------------
 - Import `girdExtra`, `ggthemes` to pass R check
 - Do not run a example in `estimatePD`
+
+iNextPD 0.3.2
+----------------------------------------------------------------
+- Fix the bootstrap tips label problem
